@@ -5,42 +5,70 @@
 
     <AbsoluteLayout>
 
-        <!-- Score -->
+        <!-- game area -->
+        <Grid x:Name="GameArea"
+      IsVisible="False"
+      ColumnDefinitions="*,*,*"
+      AbsoluteLayout.LayoutBounds="0,0,1,1"
+      AbsoluteLayout.LayoutFlags="All">
+
+            <Grid.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Left"
+                                Threshold="40"
+                                Swiped="OnSwipeLeft"/>
+                <SwipeGestureRecognizer Direction="Right"
+                                Threshold="40"
+                                Swiped="OnSwipeRight"/>
+            </Grid.GestureRecognizers>
+
+            <!-- lanes -->
+            <BoxView Grid.Column="0" Color="#222" />
+            <BoxView Grid.Column="1" Color="#1A1A1A" />
+            <BoxView Grid.Column="2" Color="#222" />
+
+            <!-- player -->
+            <BoxView x:Name="Player"
+             Grid.Column="1"
+             Color="DodgerBlue"
+             WidthRequest="45"
+             HeightRequest="45"
+             VerticalOptions="End"
+             Margin="0,0,0,30" />
+
+            <!-- obstacle -->
+            <BoxView x:Name="Obstacle"
+             Grid.Column="1"
+             Color="Red"
+             WidthRequest="45"
+             HeightRequest="45"
+             VerticalOptions="Start" />
+            </Grid>
+
+            <!-- starting screen -->
+        <StackLayout x:Name="StartScreen"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"
+                     Spacing="20"
+                     AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                     AbsoluteLayout.LayoutFlags="PositionProportional">
+
+            <Label Text="My Runner Game"
+                   FontSize="32"
+                   HorizontalOptions="Center"/>
+
+            <Button Text="START"
+                    FontSize="20"
+                    Padding="20"
+                    Clicked="StartButton_Clicked"/>
+        </StackLayout>
+
+        <!-- score -->
         <Label x:Name="ScoreLabel"
                Text="Score: 0"
                TextColor="White"
                FontSize="22"
                AbsoluteLayout.LayoutBounds="0.5,0.05,200,50"
-               AbsoluteLayout.LayoutFlags="PositionProportional" />
-
-        <!-- Game Area -->
-        <Grid x:Name="GameArea"
-              ColumnDefinitions="*,*,*"
-              AbsoluteLayout.LayoutBounds="0,0,1,1"
-              AbsoluteLayout.LayoutFlags="All">
-
-            <!-- Lane backgrounds -->
-            <BoxView Grid.Column="0" Color="#222" />
-            <BoxView Grid.Column="1" Color="#1A1A1A" />
-            <BoxView Grid.Column="2" Color="#222" />
-
-            <!-- Player -->
-            <BoxView x:Name="Player"
-                     Grid.Column="1"
-                     Color="DodgerBlue"
-                     WidthRequest="45"
-                     HeightRequest="45"
-                     VerticalOptions="End"
-                     Margin="0,0,0,30" />
-
-            <!-- Obstacle -->
-            <BoxView x:Name="Obstacle"
-                     Color="Red"
-                     WidthRequest="45"
-                     HeightRequest="45"
-                     VerticalOptions="Start" />
-
-        </Grid>
+               AbsoluteLayout.LayoutFlags="PositionProportional"/>
 
     </AbsoluteLayout>
 </ContentPage>

@@ -3,103 +3,145 @@
 public partial class MainPage : ContentPage
 {
     int currentLane = 1; // 0 = left, 1 = middle, 2 = right
-    int obstacleLane;
+    bool isGameRunning = false;
     int score = 0;
-    bool isJumping = false;
 
     IDispatcherTimer gameTimer;
     Random random = new();
 
+    const double playerSize = 45;
+    const double obstacleSpeed = 6;
+
     public MainPage()
     {
         InitializeComponent();
-        SetupGestures();
-        StartGame();
+        ResetPositions();
     }
 
-    void SetupGestures()
+    // starting event handler
+    private void StartButton_Clicked(object sender, EventArgs e)
     {
-        var left = new SwipeGestureRecognizer { Direction = SwipeDirection.Left };
-        left.Swiped += (_, _) => MoveLeft();
-        
+        StartScreen.IsVisible = false;
+        GameArea.IsVisible = true;
 
-        var right = new SwipeGestureRecognizer { Direction = SwipeDirection.Right };
-        right.Swiped += (_, _) => MoveRight();
+        score = 0;
+        ScoreLabel.Text = "Score: 0";
+        isGameRunning = true;
 
-        var up = new SwipeGestureRecognizer { Direction = SwipeDirection.Up };
-        up.Swiped += (_, _) => Jump();
-
-        GameArea.GestureRecognizers.Add(left);
-        GameArea.GestureRecognizers.Add(right);
-        GameArea.GestureRecognizers.Add(up);
+        ResetPositions();
+        StartGameLoop();
     }
 
-    void StartGame()
+    // loop
+    void StartGameLoop()
     {
-        obstacleLane = random.Next(0, 3);
-        Grid.SetColumn(Obstacle, obstacleLane);
-        Obstacle.TranslationY = -60;
-
         gameTimer = Dispatcher.CreateTimer();
-        gameTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
+        gameTimer.Interval = TimeSpan.FromMilliseconds(16); // fps
         gameTimer.Tick += GameLoop;
         gameTimer.Start();
     }
 
     void GameLoop(object sender, EventArgs e)
     {
-        Obstacle.TranslationY += 8;
+        if (!isGameRunning)
+            return;
 
-        if (Obstacle.TranslationY > Height)
-        {
-            Obstacle.TranslationY = -60;
-            obstacleLane = random.Next(0, 3);
-            Grid.SetColumn(Obstacle, obstacleLane);
-
-            score++;
-            ScoreLabel.Text = $"Score: {score}";
-        }
-
+        MoveObstacle();
         CheckCollision();
     }
 
-    void MoveLeft()
+    // moving player
+    void MovePlayer()
     {
+        double laneWidth = GameArea.Width / 3;
+        double x = (laneWidth * currentLane) + (laneWidth / 2) - (playerSize / 2);
+
+        AbsoluteLayout.SetLayoutBounds(Player,
+            new Rect(x, GameArea.Height - 80, playerSize, playerSize));
+    }
+
+    private void OnTapLeft(object sender, EventArgs e)
+    {
+        if (!isGameRunning) return;
+
         if (currentLane > 0)
-        {
             currentLane--;
-            Grid.SetColumn(Player, currentLane);
-        }
+
+        MovePlayer();
     }
 
-    void MoveRight()
+    private void OnTapRight(object sender, EventArgs e)
     {
+        if (!isGameRunning) return;
+
         if (currentLane < 2)
-        {
             currentLane++;
-            Grid.SetColumn(Player, currentLane);
+
+        MovePlayer();
+    }
+
+    // trucks
+    void MoveObstacle()
+    {
+        double y = Obstacle.TranslationY + obstacleSpeed;
+        Obstacle.TranslationY = y;
+
+        if (y > GameArea.Height)
+        {
+            RespawnObstacle();
+            score++;
+            ScoreLabel.Text = $"Score: {score}";
         }
     }
 
-    async void Jump()
+    void RespawnObstacle()
     {
-        if (isJumping) return;
+        int lane = random.Next(0, 3);
+        double laneWidth = GameArea.Width / 3;
+        double x = (laneWidth * lane) + (laneWidth / 2) - (playerSize / 2);
 
-        isJumping = true;
-        await Player.TranslateTo(0, -120, 250);
-        await Player.TranslateTo(0, 0, 250);
-        isJumping = false;
+        Obstacle.TranslationY = -playerSize;
+
+        AbsoluteLayout.SetLayoutBounds(Obstacle,
+            new Rect(x, 0, playerSize, playerSize));
     }
 
+    // collision
     void CheckCollision()
     {
-        if (currentLane != obstacleLane)
-            return;
+        Rect playerRect = new Rect(
+            Player.X + Player.TranslationX,
+            Player.Y + Player.TranslationY,
+            Player.Width,
+            Player.Height);
 
-        if (Obstacle.TranslationY > Height - 150 && !isJumping)
+        Rect obstacleRect = new Rect(
+            Obstacle.X + Obstacle.TranslationX,
+            Obstacle.Y + Obstacle.TranslationY,
+            Obstacle.Width,
+            Obstacle.Height);
+
+        if (playerRect.IntersectsWith(obstacleRect))
         {
-            gameTimer.Stop();
-            DisplayAlert("Game Over", $"Score: {score}", "OK");
+            EndGame();
         }
+    }
+
+
+    // reset
+    void ResetPositions()
+    {
+        currentLane = 1;
+        MovePlayer();
+        RespawnObstacle();
+    }
+
+    void EndGame()
+    {
+        isGameRunning = false;
+        gameTimer?.Stop();
+
+        StartScreen.IsVisible = true;
+        GameArea.IsVisible = false;
     }
 }
