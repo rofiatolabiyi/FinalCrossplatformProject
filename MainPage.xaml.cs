@@ -1,33 +1,37 @@
-﻿namespace CrossplatFinal;
+﻿using CrossplatFinal.Models;
+
+namespace CrossplatFinal;
 
 public partial class MainPage : ContentPage
 {
-    //declarations
-    int currentLane = 1; // 0 = left, 1 = middle, 2 = right
-    bool isGameRunning;
-    int score;
+    // player object
+    private Player player;
 
-    IDispatcherTimer gameTimer;
-    Random random = new();
+    private bool isGameRunning;
+    private int score;
+    private double obstacleSpeed = 6;
 
-    const double playerSize = 45;
-    double obstacleSpeed = 6;
+    // timer
+    private IDispatcherTimer gameTimer;
+    private Random random = new();
 
     public MainPage()
     {
         InitializeComponent();
 
-        // waiting until layout is ready
+        // object 
+        player = new Player(Player);
+
         GameArea.SizeChanged += OnGameAreaSizeChanged;
     }
 
-    void OnGameAreaSizeChanged(object sender, EventArgs e)
+    private void OnGameAreaSizeChanged(object sender, EventArgs e)
     {
         GameArea.SizeChanged -= OnGameAreaSizeChanged;
         ResetPositions();
     }
 
-    // start
+    // start game
     private void StartButton_Clicked(object sender, EventArgs e)
     {
         StartScreen.IsVisible = false;
@@ -41,8 +45,7 @@ public partial class MainPage : ContentPage
         StartGameLoop();
     }
 
-    // game loop
-    void StartGameLoop()
+    private void StartGameLoop()
     {
         gameTimer?.Stop();
 
@@ -52,7 +55,7 @@ public partial class MainPage : ContentPage
         gameTimer.Start();
     }
 
-    void GameLoop(object sender, EventArgs e)
+    private void GameLoop(object sender, EventArgs e)
     {
         if (!isGameRunning)
             return;
@@ -62,35 +65,20 @@ public partial class MainPage : ContentPage
     }
 
     // player
-    void MovePlayer()
-    {
-        if (GameArea.Width <= 0) return;
-
-        double laneWidth = GameArea.Width / 3;
-        double targetX = (laneWidth * currentLane) + (laneWidth / 2) - (playerSize / 2);
-
-        Player.TranslationX = targetX - Player.X;
-    }
-
-    // input
     private void OnTapLeft(object sender, EventArgs e)
     {
         if (!isGameRunning) return;
 
-        if (currentLane > 0)
-            currentLane--;
-
-        MovePlayer();
+        player.MoveLeft();
+        player.MoveToLane(GameArea.Width);
     }
 
     private void OnTapRight(object sender, EventArgs e)
     {
         if (!isGameRunning) return;
 
-        if (currentLane < 2)
-            currentLane++;
-
-        MovePlayer();
+        player.MoveRight();
+        player.MoveToLane(GameArea.Width);
     }
 
     private void OnSwipeLeft(object sender, SwipedEventArgs e)
@@ -104,7 +92,7 @@ public partial class MainPage : ContentPage
     }
 
     // obstacle
-    void MoveObstacle()
+    private void MoveObstacle()
     {
         Obstacle.TranslationY += obstacleSpeed;
 
@@ -116,26 +104,26 @@ public partial class MainPage : ContentPage
         }
     }
 
-    void RespawnObstacle()
+    private void RespawnObstacle()
     {
         if (GameArea.Width <= 0) return;
 
         int lane = random.Next(0, 3);
         double laneWidth = GameArea.Width / 3;
-        double targetX = (laneWidth * lane) + (laneWidth / 2) - (playerSize / 2);
+        double targetX = (laneWidth * lane) + (laneWidth / 2) - (Obstacle.Width / 2);
 
-        Obstacle.TranslationY = -playerSize;
+        Obstacle.TranslationY = -Obstacle.Height;
         Obstacle.TranslationX = targetX - Obstacle.X;
     }
 
     // collision
-    void CheckCollision()
+    private void CheckCollision()
     {
         Rect playerRect = new(
-            Player.X + Player.TranslationX,
-            Player.Y + Player.TranslationY,
-            Player.Width,
-            Player.Height);
+            player.View.X + player.View.TranslationX,
+            player.View.Y + player.View.TranslationY,
+            player.View.Width,
+            player.View.Height);
 
         Rect obstacleRect = new(
             Obstacle.X + Obstacle.TranslationX,
@@ -150,14 +138,15 @@ public partial class MainPage : ContentPage
     }
 
     // end
-    void ResetPositions()
+    private void ResetPositions()
     {
-        currentLane = 1;
-        MovePlayer();
+        player.Reset();
+        player.MoveToLane(GameArea.Width);
+
         RespawnObstacle();
     }
 
-    void EndGame()
+    private void EndGame()
     {
         isGameRunning = false;
         gameTimer?.Stop();
@@ -166,4 +155,5 @@ public partial class MainPage : ContentPage
         GameArea.IsVisible = false;
     }
 }
+
 

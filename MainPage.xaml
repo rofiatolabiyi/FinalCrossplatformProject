@@ -36,12 +36,12 @@
 
 
             <!-- obstacle -->
-            <BoxView x:Name="Obstacle"
-             Grid.Column="1"
-             Color="Red"
-             WidthRequest="160"
-             HeightRequest="160"
-             VerticalOptions="Start" />
+            <Image x:Name="Obstacle"
+            Source="opponent.png"
+            WidthRequest="160"
+            HeightRequest="160"
+            VerticalOptions="Start"
+            Margin="0,0,0,30"/>
             </Grid>
 
             <!-- starting screen -->
