@@ -27,20 +27,20 @@
             <BoxView Grid.Column="2" Color="#222" />
 
             <!-- player -->
-            <BoxView x:Name="Player"
-             Grid.Column="1"
-             Color="DodgerBlue"
-             WidthRequest="45"
-             HeightRequest="45"
-             VerticalOptions="End"
-             Margin="0,0,0,30" />
+            <Image x:Name="Player"
+            Source="player.png"
+            WidthRequest="160"
+            HeightRequest="160"
+            VerticalOptions="End"
+            Margin="0,0,0,30" />
+
 
             <!-- obstacle -->
             <BoxView x:Name="Obstacle"
              Grid.Column="1"
              Color="Red"
-             WidthRequest="45"
-             HeightRequest="45"
+             WidthRequest="160"
+             HeightRequest="160"
              VerticalOptions="Start" />
             </Grid>
 
