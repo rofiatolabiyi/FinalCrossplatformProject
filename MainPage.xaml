@@ -14,12 +14,9 @@
       AbsoluteLayout.LayoutFlags="All">
 
             <Grid.GestureRecognizers>
-                <SwipeGestureRecognizer Direction="Left"
-                                Threshold="40"
-                                Swiped="OnSwipeLeft"/>
-                <SwipeGestureRecognizer Direction="Right"
-                                Threshold="40"
-                                Swiped="OnSwipeRight"/>
+                <!-- swipe gestures -->
+                <SwipeGestureRecognizer Direction="Left" Threshold="40" Swiped="OnSwipeLeft"/>
+                <SwipeGestureRecognizer Direction="Right" Threshold="40" Swiped="OnSwipeRight"/>
             </Grid.GestureRecognizers>
 
             <!-- lanes -->
@@ -43,9 +40,19 @@
             HeightRequest="160"
             VerticalOptions="Start"
             Margin="0,0,0,30"/>
-            </Grid>
 
-            <!-- starting screen -->
+            <!-- pickup -->
+            <Image x:Name="Pickup"
+            Source="coin.png"
+            WidthRequest="160"
+            HeightRequest="160"
+            VerticalOptions="Start"
+            IsVisible="False"
+            Margin="0,0,0,30"/>
+
+        </Grid>
+
+        <!-- starting screen -->
         <StackLayout x:Name="StartScreen"
                      VerticalOptions="Center"
                      HorizontalOptions="Center"
