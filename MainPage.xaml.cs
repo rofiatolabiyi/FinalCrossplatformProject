@@ -104,8 +104,8 @@ public partial class MainPage : ContentPage
             score++;
             ScoreLabel.Text = $"Score: {score}";
 
-            // adds speed, capped at 20
-            if (score % 5 == 0 && obstacleSpeed < 20)
+            // adds speed, capped at 30
+            if (score % 3 == 0 && obstacleSpeed < 30)
             {
                 obstacleSpeed += 0.5;
             }

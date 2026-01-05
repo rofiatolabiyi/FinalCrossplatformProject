@@ -20,13 +20,13 @@ public class Player
         View = view;
     }
 
-    // Move to a specific lane
+    // move to a specific lane
     public void MoveToLane(double gameAreaWidth)
     {
         double laneWidth = gameAreaWidth / 3;
         double targetX = (laneWidth * Lane) + (laneWidth / 2) - (Size / 2);
 
-        // Move using translation
+        // move using translation
         View.TranslationX = targetX - View.X;
     }
 
