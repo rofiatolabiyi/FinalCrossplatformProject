@@ -99,10 +99,18 @@ public partial class MainPage : ContentPage
         if (Obstacle.Y + Obstacle.TranslationY > GameArea.Height)
         {
             RespawnObstacle();
+
+            // incrementation
             score++;
             ScoreLabel.Text = $"Score: {score}";
+
+            // adds speed, capped at 20
+            if (score % 5 == 0 && obstacleSpeed < 20)
+            {
+                obstacleSpeed += 0.5;
+            }
         }
-    }
+        }
 
     private void RespawnObstacle()
     {
