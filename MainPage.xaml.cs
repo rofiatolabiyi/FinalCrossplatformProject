@@ -1,5 +1,6 @@
-﻿using CrossplatFinal.Models;
+﻿using CrossplatFinal;
 using Microsoft.Maui.Storage;
+using static Android.Provider.MediaStore;
 
 namespace CrossplatFinal;
 
@@ -14,16 +15,30 @@ public partial class MainPage : ContentPage
 
     // timer
     private IDispatcherTimer gameTimer;
-    private Random random = new();
+    private readonly Random random = new();
 
     public MainPage()
     {
         InitializeComponent();
 
-        // object 
         player = new Player(Player);
 
         GameArea.SizeChanged += OnGameAreaSizeChanged;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Helps on devices where AutoPlay doesn't start immediately
+        BgVideo?.Play();
+    }
+
+    protected override void OnDisappearing()
+    {
+        // Optional: stop/pause video when leaving page
+        BgVideo?.Pause();
+        base.OnDisappearing();
     }
 
     private void OnGameAreaSizeChanged(object sender, EventArgs e)
@@ -35,7 +50,7 @@ public partial class MainPage : ContentPage
     // start game
     private void StartButton_Clicked(object sender, EventArgs e)
     {
-        bool soundOn = Preferences.Get("sound", true);
+        // Load settings
         int difficulty = Preferences.Get("difficulty", 1);
 
         obstacleSpeed = difficulty switch
@@ -43,7 +58,7 @@ public partial class MainPage : ContentPage
             0 => 5,  // easy
             1 => 6,  // normal
             2 => 8,  // hard
-            _ => 6 // defaults to 6
+            _ => 6
         };
 
         StartScreen.IsVisible = false;
@@ -93,15 +108,8 @@ public partial class MainPage : ContentPage
         player.MoveToLane(GameArea.Width);
     }
 
-    private void OnSwipeLeft(object sender, SwipedEventArgs e)
-    {
-        OnTapLeft(sender, e);
-    }
-
-    private void OnSwipeRight(object sender, SwipedEventArgs e)
-    {
-        OnTapRight(sender, e);
-    }
+    private void OnSwipeLeft(object sender, SwipedEventArgs e) => OnTapLeft(sender, e);
+    private void OnSwipeRight(object sender, SwipedEventArgs e) => OnTapRight(sender, e);
 
     // obstacle
     private void MoveObstacle()
@@ -112,15 +120,12 @@ public partial class MainPage : ContentPage
         {
             RespawnObstacle();
 
-            // incrementation
             score++;
             ScoreLabel.Text = $"Score: {score}";
 
             // adds speed, capped at 30
             if (score % 3 == 0 && obstacleSpeed < 30)
-            {
                 obstacleSpeed += 0.5;
-            }
         }
     }
 
@@ -157,15 +162,11 @@ public partial class MainPage : ContentPage
         }
     }
 
-    //settings handler
+    // settings handler (Shell navigation)
     private async void SettingsButton_Clicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(SettingsPage));
-        // to go back
-        await Shell.Current.GoToAsync("..");
-
     }
-
 
     // end and reset
     private void ResetPositions()
@@ -185,5 +186,6 @@ public partial class MainPage : ContentPage
         GameArea.IsVisible = false;
     }
 }
+
 
 

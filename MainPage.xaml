@@ -1,69 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:media="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
              x:Class="CrossplatFinal.MainPage"
-             Title="">
+             Title=""
+             Shell.NavBarIsVisible="False">
 
     <AbsoluteLayout>
 
-        <!-- background image-->
-        <MediaElement x:Name="BgVideo"
-              Source="road.mp4"
-              AutoPlay="True"
-              IsLooping="True"
-              ShowsPlaybackControls="False"
-              Aspect="AspectFill"
-              AbsoluteLayout.LayoutBounds="0,0,1,1"
-              AbsoluteLayout.LayoutFlags="All" />
+        <!-- BACKGROUND VIDEO -->
+        <media:MediaElement x:Name="BgVideo"
+                            Source="road.mp4"
+                            AutoPlay="True"
+                            IsLooping="True"
+                            ShowsPlaybackControls="False"
+                            Aspect="AspectFill"
+                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All" />
 
-
-        <!-- game area -->
+        <!-- GAME AREA -->
         <Grid x:Name="GameArea"
-      IsVisible="False"
-      ColumnDefinitions="*,*,*"
-      AbsoluteLayout.LayoutBounds="0,0,1,1"
-      AbsoluteLayout.LayoutFlags="All">
+              IsVisible="False"
+              ColumnDefinitions="*,*,*"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All">
 
             <Grid.GestureRecognizers>
-                <!-- swipe gestures -->
-                <SwipeGestureRecognizer Direction="Left" Threshold="40" Swiped="OnSwipeLeft"/>
-                <SwipeGestureRecognizer Direction="Right" Threshold="40" Swiped="OnSwipeRight"/>
+                <SwipeGestureRecognizer Direction="Left"
+                                        Threshold="40"
+                                        Swiped="OnSwipeLeft"/>
+                <SwipeGestureRecognizer Direction="Right"
+                                        Threshold="40"
+                                        Swiped="OnSwipeRight"/>
             </Grid.GestureRecognizers>
 
-            <!-- lanes -->
-            <BoxView Grid.Column="0"/>
-            <BoxView Grid.Column="1"/>
-            <BoxView Grid.Column="2"/>
+            <!-- Lanes (transparent overlays, so background video shows) -->
+            <BoxView Grid.Column="0" Color="Transparent"/>
+            <BoxView Grid.Column="1" Color="Transparent"/>
+            <BoxView Grid.Column="2" Color="Transparent"/>
 
-            <!-- player -->
+            <!-- Player -->
             <Image x:Name="Player"
-            Source="player.png"
-            WidthRequest="160"
-            HeightRequest="160"
-            VerticalOptions="End"
-            Margin="0,0,0,30" />
+                   Source="player.png"
+                   WidthRequest="160"
+                   HeightRequest="160"
+                   VerticalOptions="End"
+                   Margin="0,0,0,30" />
 
-
-            <!-- obstacle -->
+            <!-- Obstacle -->
             <Image x:Name="Obstacle"
-            Source="opponent.png"
-            WidthRequest="160"
-            HeightRequest="160"
-            VerticalOptions="Start"
-            Margin="0,0,0,30"/>
+                   Source="opponent.png"
+                   WidthRequest="160"
+                   HeightRequest="160"
+                   VerticalOptions="Start"
+                   Margin="0,0,0,30"/>
 
-            <!-- pickup -->
+            <!-- Pickup -->
             <Image x:Name="Pickup"
-            Source="coin.png"
-            WidthRequest="160"
-            HeightRequest="160"
-            VerticalOptions="Start"
-            IsVisible="False"
-            Margin="0,0,0,30"/>
+                   Source="coin.png"
+                   WidthRequest="160"
+                   HeightRequest="160"
+                   VerticalOptions="Start"
+                   IsVisible="False"
+                   Margin="0,0,0,30"/>
 
         </Grid>
 
-        <!-- starting screen -->
+        <!-- START SCREEN -->
         <StackLayout x:Name="StartScreen"
                      VerticalOptions="Center"
                      HorizontalOptions="Center"
@@ -73,12 +76,13 @@
 
             <Label Text="My Traffic Game"
                    FontSize="32"
+                   TextColor="White"
                    HorizontalOptions="Center"/>
 
             <Button Text="SETTINGS"
-                FontSize="20"
-                Padding="20"
-                Clicked="SettingsButton_Clicked"/>
+                    FontSize="20"
+                    Padding="20"
+                    Clicked="SettingsButton_Clicked"/>
 
             <Button Text="START"
                     FontSize="20"
@@ -86,12 +90,13 @@
                     Clicked="StartButton_Clicked"/>
         </StackLayout>
 
-        <!-- score -->
+        <!-- SCORE -->
         <Label x:Name="ScoreLabel"
                Text="Score: 0"
                TextColor="White"
                FontSize="22"
                AbsoluteLayout.LayoutBounds="0.5,0.05,200,50"
                AbsoluteLayout.LayoutFlags="PositionProportional"/>
+
     </AbsoluteLayout>
 </ContentPage>

@@ -1,4 +1,6 @@
-﻿namespace CrossplatFinal;
+﻿using Microsoft.Maui.Storage;
+
+namespace CrossplatFinal;
 
 public partial class SettingsPage : ContentPage
 {
@@ -9,7 +11,7 @@ public partial class SettingsPage : ContentPage
         // Load saved values (defaults)
         SoundSwitch.IsToggled = Preferences.Get("sound", true);
         MusicSwitch.IsToggled = Preferences.Get("music", true);
-        DifficultyPicker.SelectedIndex = Preferences.Get("difficulty", 1); // 0 easy, 1 normal, 2 hard
+        DifficultyPicker.SelectedIndex = Preferences.Get("difficulty", 1);
     }
 
     private void Save_Clicked(object sender, EventArgs e)
@@ -21,7 +23,8 @@ public partial class SettingsPage : ContentPage
 
     private async void Back_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+        await Shell.Current.GoToAsync("..");
     }
 }
+
 

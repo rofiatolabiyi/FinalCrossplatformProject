@@ -2,24 +2,39 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CrossplatFinal.SettingsPage"
-             Title="Settings">
+             Title="Settings"
+             Shell.NavBarIsVisible="True">
 
-    <VerticalStackLayout Padding="20" Spacing="16">
+    <VerticalStackLayout Padding="24" Spacing="18">
 
-        <Label Text="Settings" FontSize="28" />
+        <!-- Header -->
+        <Label Text="Settings"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
 
+        <!-- Sound toggle -->
         <HorizontalStackLayout Spacing="12">
-            <Label Text="Sound" VerticalOptions="Center" />
+            <Label Text="Sound"
+                   FontSize="18"
+                   VerticalOptions="Center" />
             <Switch x:Name="SoundSwitch" />
         </HorizontalStackLayout>
 
+        <!-- Music toggle -->
         <HorizontalStackLayout Spacing="12">
-            <Label Text="Music" VerticalOptions="Center" />
+            <Label Text="Music"
+                   FontSize="18"
+                   VerticalOptions="Center" />
             <Switch x:Name="MusicSwitch" />
         </HorizontalStackLayout>
 
-        <Label Text="Difficulty" />
-        <Picker x:Name="DifficultyPicker">
+        <!-- Difficulty picker -->
+        <Label Text="Difficulty"
+               FontSize="18" />
+
+        <Picker x:Name="DifficultyPicker"
+                Title="Select difficulty">
             <Picker.Items>
                 <x:String>Easy</x:String>
                 <x:String>Normal</x:String>
@@ -27,8 +42,14 @@
             </Picker.Items>
         </Picker>
 
-        <Button Text="Save" Clicked="Save_Clicked" />
-        <Button Text="Back" Clicked="Back_Clicked" />
+        <!-- Buttons -->
+        <Button Text="Save"
+                FontSize="18"
+                Clicked="Save_Clicked" />
+
+        <Button Text="Back"
+                FontSize="18"
+                Clicked="Back_Clicked" />
 
     </VerticalStackLayout>
 </ContentPage>
