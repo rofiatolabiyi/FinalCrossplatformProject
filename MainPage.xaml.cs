@@ -16,6 +16,8 @@ public partial class MainPage : ContentPage
     // audio
     private IAudioPlayer coinPlayer;
     private IAudioPlayer crashPlayer;
+    private IAudioPlayer musicPlayer;
+
 
     // timer
     private IDispatcherTimer gameTimer;
@@ -61,15 +63,39 @@ public partial class MainPage : ContentPage
 
             crashPlayer = AudioManager.Current.CreatePlayer(
                 await FileSystem.OpenAppPackageFileAsync("crash.mp3"));
+
+            musicPlayer = AudioManager.Current.CreatePlayer(
+                await FileSystem.OpenAppPackageFileAsync("music.mp3"));
+
+            musicPlayer.Loop = true;
+            musicPlayer.Volume = 0.5;
+
+            ApplySoundVolume();      // if you added slider support
+            UpdateMusicPlayback();   // ✅ start/stop based on toggle
         }
-        catch(Exception)
+        catch
         {
-            // if files are empty dont crash
             coinPlayer = null;
             crashPlayer = null;
+            musicPlayer = null;
         }
-        ApplySoundVolume();
+    }
 
+
+    //music helper method
+    private void UpdateMusicPlayback()
+    {
+        bool musicOn = Preferences.Get("music", true);
+
+        if (musicOn)
+        {
+            if (musicPlayer != null && !musicPlayer.IsPlaying)
+                musicPlayer.Play();
+        }
+        else
+        {
+            musicPlayer?.Stop();
+        }
     }
 
     // sound slider helper method
