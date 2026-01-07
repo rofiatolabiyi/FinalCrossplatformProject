@@ -70,8 +70,8 @@ public partial class MainPage : ContentPage
             musicPlayer.Loop = true;
             musicPlayer.Volume = 0.5;
 
-            ApplySoundVolume();      // if you added slider support
-            UpdateMusicPlayback();   // ✅ start/stop based on toggle
+            ApplySoundVolume();    
+            UpdateMusicPlayback();  
         }
         catch
         {
@@ -274,13 +274,15 @@ public partial class MainPage : ContentPage
         base.OnAppearing();
         LoadPlayerImage();
         ApplySoundVolume();
+        UpdateMusicPlayback();
+
     }
 
     protected override void OnDisappearing()
     {
         coinPlayer?.Stop();
         crashPlayer?.Stop();
-
+        musicPlayer?.Stop();
         base.OnDisappearing();
     }
 

@@ -14,7 +14,7 @@
                HorizontalOptions="Center" />
 
         <!-- sound volume slider -->
-        <Label Text="Overall Volume" FontSize="18"/>
+        <Label Text="Overa Volume" FontSize="18"/>
 
         <Slider x:Name="SoundVolumeSlider"
         Minimum="0"
