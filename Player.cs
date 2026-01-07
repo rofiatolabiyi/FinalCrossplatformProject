@@ -2,53 +2,102 @@
 
 namespace CrossplatFinal;
 
-public class Player
+public enum PickupType
 {
-    public Image View { get; }
+    Coin,
+    Shield
+}
 
-    // lanes: 0 = left, 1 = middle, 2 = right
-    public int Lane { get; private set; } = 1;
+public class Pickups
+{
+    private readonly Image pickupView;
+    private readonly Random random = new();
 
-    // size of car
-    public double Size { get; } = 160;
+    private double speed = 6;
 
-    // constructor
-    public Player(Image view)
+    public bool IsActive { get; private set; }
+    public PickupType CurrentType { get; private set; } = PickupType.Coin;
+
+    // coin images (3 options)
+    private readonly string[] coinImages = { "coin1.png", "coin2.png", "coin3.png" };
+
+    public Pickups(Image pickupView)
     {
-        View = view;
+        this.pickupView = pickupView;
+        pickupView.IsVisible = false;
     }
 
-    // Move player to the current lane
-    public void MoveToLane(double gameAreaWidth)
+    public void SetSpeed(double obstacleSpeed) => speed = obstacleSpeed;
+
+    public void Spawn(double gameAreaWidth)
     {
         if (gameAreaWidth <= 0) return;
 
+        // 25% chance shield, 75% coin
+        CurrentType = random.NextDouble() < 0.25 ? PickupType.Shield : PickupType.Coin;
+
+        // choose image
+        if (CurrentType == PickupType.Shield)
+            pickupView.Source = "shield.png";
+        else
+            pickupView.Source = coinImages[random.Next(coinImages.Length)];
+
+        // lane positioning
+        int lane = random.Next(0, 3);
         double laneWidth = gameAreaWidth / 3;
-        double targetX = (laneWidth * Lane) + (laneWidth / 2) - (Size / 2);
+        double targetX = (laneWidth * lane) + (laneWidth / 2) - (pickupView.WidthRequest / 2);
 
-        // Move using translation
-        View.TranslationX = targetX - View.X;
+        pickupView.TranslationY = -pickupView.HeightRequest;
+        pickupView.TranslationX = targetX - pickupView.X;
+
+        pickupView.IsVisible = true;
+        IsActive = true;
     }
 
-    // Move left
-    public void MoveLeft()
+    public void Update()
     {
-        if (Lane > 0)
-            Lane--;
+        if (!IsActive) return;
+        pickupView.TranslationY += speed;
     }
 
-    // Move right
-    public void MoveRight()
+    public void CheckOffScreen(double gameAreaHeight)
     {
-        if (Lane < 2)
-            Lane++;
+        if (!IsActive) return;
+
+        if (pickupView.Y + pickupView.TranslationY > gameAreaHeight + pickupView.HeightRequest)
+        {
+            pickupView.IsVisible = false;
+            IsActive = false;
+        }
     }
 
-    // Reset player to middle lane
-    public void Reset()
+    public bool TryCollect(Image playerView, out PickupType type)
     {
-        Lane = 1;
-        View.TranslationX = 0;
+        type = PickupType.Coin;
+        if (!IsActive || !pickupView.IsVisible) return false;
+
+        Rect playerRect = new(
+            playerView.X + playerView.TranslationX,
+            playerView.Y + playerView.TranslationY,
+            playerView.Width,
+            playerView.Height);
+
+        Rect pickupRect = new(
+            pickupView.X + pickupView.TranslationX,
+            pickupView.Y + pickupView.TranslationY,
+            pickupView.Width,
+            pickupView.Height);
+
+        if (playerRect.IntersectsWith(pickupRect))
+        {
+            type = CurrentType;
+            pickupView.IsVisible = false;
+            IsActive = false;
+            return true;
+        }
+
+        return false;
     }
 }
+
 

@@ -14,6 +14,15 @@
        AbsoluteLayout.LayoutBounds="0,0,1,1"
        AbsoluteLayout.LayoutFlags="All" />
 
+        <Image x:Name="ShieldIcon"
+       Source="shield.png"
+       WidthRequest="50"
+       HeightRequest="50"
+       IsVisible="False"
+       AbsoluteLayout.LayoutBounds="0.95,0.05,50,50"
+       AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+
 
         <!-- GAME AREA -->
         <Grid x:Name="GameArea"
