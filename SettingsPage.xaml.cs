@@ -76,12 +76,10 @@ public partial class SettingsPage : ContentPage
 
         Preferences.Set("car_index", CarPicker.SelectedIndex);
 
-        // ✅ Decide mode based on the toggle
+        
         bool useCustom = UseCustomSkinSwitch.IsToggled;
         Preferences.Set("use_custom_skin", useCustom);
 
-        // ✅ DO NOT remove player_image here
-        // Preferences.Remove("player_image");  <-- remove this line
     }
 
 
