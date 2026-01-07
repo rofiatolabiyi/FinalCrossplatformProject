@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.MediaElement;
+﻿
 
 namespace CrossplatFinal;
 
@@ -9,8 +9,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
 
         builder
-            .UseMauiApp<App>()
-            .UseMauiCommunityToolkitMediaElement();
+            .UseMauiApp<App>();
 
         return builder.Build();
     }
