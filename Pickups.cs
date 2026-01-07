@@ -27,4 +27,12 @@ public class Pickups
         pickup.TranslationY = -pickup.Height;
         pickup.IsVisible = true;
     }
+
+    // Move coin down
+    public void Update()
+    {
+        if (!pickup.IsVisible) return;
+
+        pickup.TranslationY += speed;
+    }
 }
