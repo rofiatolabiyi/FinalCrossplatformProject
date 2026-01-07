@@ -1,22 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:media="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui.MediaElement"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:media="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="CrossplatFinal.MainPage"
              Title=""
              Shell.NavBarIsVisible="False">
 
     <AbsoluteLayout>
 
-        <!-- BACKGROUND VIDEO -->
+        <!-- background video -->
         <media:MediaElement x:Name="BgVideo"
-                            Source="road.mp4"
-                            AutoPlay="True"
-                            IsLooping="True"
-                            ShowsPlaybackControls="False"
-                            Aspect="AspectFill"
-                            AbsoluteLayout.LayoutBounds="0,0,1,1"
-                            AbsoluteLayout.LayoutFlags="All" />
+                    Source="road.mp4"
+                    AutoPlay="True"
+                    ShouldLoopPlayback="True"
+                    ShowsPlaybackControls="False"
+                    Aspect="AspectFill"
+                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All" />
+
 
         <!-- GAME AREA -->
         <Grid x:Name="GameArea"

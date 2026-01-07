@@ -49,4 +49,6 @@ public class Player
     {
         Lane = 1;
         View.TranslationX = 0;
+    }
+}
 

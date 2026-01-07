@@ -1,6 +1,4 @@
-﻿using CrossplatFinal;
-using Microsoft.Maui.Storage;
-using static Android.Provider.MediaStore;
+﻿using Microsoft.Maui.Storage;
 
 namespace CrossplatFinal;
 
@@ -36,7 +34,6 @@ public partial class MainPage : ContentPage
 
     protected override void OnDisappearing()
     {
-        // Optional: stop/pause video when leaving page
         BgVideo?.Pause();
         base.OnDisappearing();
     }
@@ -157,9 +154,7 @@ public partial class MainPage : ContentPage
             Obstacle.Height);
 
         if (playerRect.IntersectsWith(obstacleRect))
-        {
             EndGame();
-        }
     }
 
     // settings handler (Shell navigation)
@@ -186,6 +181,7 @@ public partial class MainPage : ContentPage
         GameArea.IsVisible = false;
     }
 }
+
 
 
 
