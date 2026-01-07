@@ -37,10 +37,10 @@ public partial class MainPage : ContentPage
 
         obstacleSpeed = difficulty switch
         {
-            0 => 5,  // Easy
-            1 => 6,  // Normal
-            2 => 8,  // Hard
-            _ => 6
+            0 => 5,  // easy
+            1 => 6,  // normal
+            2 => 8,  // hard
+            _ => 6 // defaults to 6
         };
 
         StartScreen.IsVisible = false;
@@ -161,7 +161,7 @@ public partial class MainPage : ContentPage
     }
 
 
-    // end
+    // end and reset
     private void ResetPositions()
     {
         player.Reset();
