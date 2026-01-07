@@ -41,7 +41,6 @@ public partial class SettingsPage : ContentPage
 
     private void Save_Clicked(object sender, EventArgs e)
     {
-        Preferences.Set("player_image", localPath);
         Preferences.Set("sound", SoundSwitch.IsToggled);
         Preferences.Set("music", MusicSwitch.IsToggled);
         Preferences.Set("difficulty", DifficultyPicker.SelectedIndex);

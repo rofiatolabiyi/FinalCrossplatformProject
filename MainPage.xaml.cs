@@ -19,13 +19,13 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
 
+        LoadPlayerImage();
         player = new Player(Player);
 
         GameArea.SizeChanged += OnGameAreaSizeChanged;
-
-        // show saved high score on launch
         UpdateHighScoreLabel();
     }
+
 
     // save and load players chosen image helper
     private void LoadPlayerImage()
@@ -170,18 +170,25 @@ public partial class MainPage : ContentPage
             EndGame();
     }
 
-    // settings handler (Shell navigation)
+    // settings handler
     private async void SettingsButton_Clicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(SettingsPage));
     }
 
-    // optional: reset high score (wire to a button if you add one)
+    // reset high score
     private void ResetHighScore_Clicked(object sender, EventArgs e)
     {
         Preferences.Set("highscore", 0);
         UpdateHighScoreLabel();
     }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        LoadPlayerImage();
+    }
+
 
     // end and reset
     private void ResetPositions()
