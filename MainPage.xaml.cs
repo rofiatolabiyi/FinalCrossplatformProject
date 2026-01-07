@@ -160,7 +160,10 @@ public partial class MainPage : ContentPage
     //settings handler
     private async void SettingsButton_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new SettingsPage());
+        await Shell.Current.GoToAsync(nameof(SettingsPage));
+        // to go back
+        await Shell.Current.GoToAsync("..");
+
     }
 
 
