@@ -100,19 +100,19 @@ public partial class MainPage : ContentPage
             return;
 
         MoveObstacle();
-        CheckCollision();
 
-        // updating pickup frames
         pickups.Update();
         pickups.CheckOffScreen(GameArea.Height);
 
-        if (pickups.CheckCollected(Player))
+        if (pickups.TryCollect(Player, out int coinValue))
         {
-            score += 5; // bonus points
+            score += coinValue;
             ScoreLabel.Text = $"Score: {score}";
         }
 
+        CheckCollision();
     }
+
 
     // player
     private void OnTapLeft(object sender, EventArgs e)
