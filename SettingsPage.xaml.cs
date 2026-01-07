@@ -6,9 +6,15 @@ namespace CrossplatFinal;
 
 public partial class SettingsPage : ContentPage
 {
+    //constructor
     public SettingsPage()
     {
         InitializeComponent();
+
+        // overall sound settings
+        double vol = Preferences.Get("sound_volume", 0.8);
+        SoundVolumeSlider.Value = vol;
+        SoundVolumeValueLabel.Text = $"{(int)(vol * 100)}%";
 
         // load saved values (defaults)
         SoundSwitch.IsToggled = Preferences.Get("sound", true);
@@ -38,6 +44,13 @@ public partial class SettingsPage : ContentPage
         // ave path
         Preferences.Set("player_image", localPath);
     }
+
+    private void SoundVolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        Preferences.Set("sound_volume", e.NewValue);
+        SoundVolumeValueLabel.Text = $"{(int)(e.NewValue * 100)}%";
+    }
+
 
     private void Save_Clicked(object sender, EventArgs e)
     {

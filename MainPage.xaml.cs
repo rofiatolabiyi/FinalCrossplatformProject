@@ -68,8 +68,21 @@ public partial class MainPage : ContentPage
             coinPlayer = null;
             crashPlayer = null;
         }
+        ApplySoundVolume();
+
     }
 
+    // sound slider helper method
+    private void ApplySoundVolume()
+    {
+        double vol = Preferences.Get("sound_volume", 0.8);
+
+        if (coinPlayer != null) coinPlayer.Volume = vol;
+        if (crashPlayer != null) crashPlayer.Volume = vol;
+    }
+
+
+    //highscore
     private void UpdateHighScoreLabel()
     {
         int highScore = Preferences.Get("highscore", 0);
@@ -234,6 +247,7 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
         LoadPlayerImage();
+        ApplySoundVolume();
     }
 
     protected override void OnDisappearing()

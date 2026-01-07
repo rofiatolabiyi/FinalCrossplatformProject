@@ -13,15 +13,30 @@
                FontAttributes="Bold"
                HorizontalOptions="Center" />
 
-        <!-- Sound toggle -->
+        <!-- sound volume slider -->
+        <Label Text="Overall Volume" FontSize="18"/>
+
+        <Slider x:Name="SoundVolumeSlider"
+        Minimum="0"
+        Maximum="1"
+        Value="0.8"
+        ValueChanged="SoundVolumeSlider_ValueChanged"/>
+
+        <Label x:Name="SoundVolumeValueLabel"
+       Text="80%"
+       FontSize="16"/>
+
+        <!-- sound toggle button -->
         <HorizontalStackLayout Spacing="12">
             <Label Text="Sound"
                    FontSize="18"
                    VerticalOptions="Center" />
             <Switch x:Name="SoundSwitch" />
         </HorizontalStackLayout>
+        
+        
 
-        <!-- Music toggle -->
+        <!-- music toggle button -->
         <HorizontalStackLayout Spacing="12">
             <Label Text="Music"
                    FontSize="18"
@@ -29,7 +44,7 @@
             <Switch x:Name="MusicSwitch" />
         </HorizontalStackLayout>
 
-        <!-- Difficulty picker -->
+        <!-- difficulty drop down -->
         <Label Text="Difficulty"
                FontSize="18" />
 
