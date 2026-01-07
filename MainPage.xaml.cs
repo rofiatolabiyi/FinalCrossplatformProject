@@ -1,12 +1,13 @@
 ﻿using Microsoft.Maui.Storage;
 
+
 namespace CrossplatFinal;
 
 public partial class MainPage : ContentPage
 {
     // player object
     private Player player;
-
+    private Pickups pickups;
     private bool isGameRunning;
     private int score;
     private double obstacleSpeed = 6;
@@ -15,15 +16,17 @@ public partial class MainPage : ContentPage
     private IDispatcherTimer gameTimer;
     private readonly Random random = new();
 
+    // constructor
     public MainPage()
     {
         InitializeComponent();
-
         LoadPlayerImage();
+        UpdateHighScoreLabel();
+
         player = new Player(Player);
+        pickups = new Pickups(Pickup);
 
         GameArea.SizeChanged += OnGameAreaSizeChanged;
-        UpdateHighScoreLabel();
     }
 
 
