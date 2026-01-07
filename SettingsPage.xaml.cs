@@ -5,9 +5,14 @@ namespace CrossplatFinal;
 
 public partial class SettingsPage : ContentPage
 {
+    //contructor
     public SettingsPage()
     {
         InitializeComponent();
+
+        //car picker
+        CarPicker.SelectedIndex = Preferences.Get("car_index", 0);
+
 
         // load saved values (defaults)
         SoundSwitch.IsToggled = Preferences.Get("sound", true);
@@ -25,6 +30,7 @@ public partial class SettingsPage : ContentPage
         MusicVolumeValueLabel.Text = $"{(int)(musicVol * 100)}%";
     }
 
+    //change char button clicked event handler
     private async void ChangeCharacter_Clicked(object sender, EventArgs e)
     {
         var result = await FilePicker.PickAsync(new PickOptions
@@ -45,6 +51,7 @@ public partial class SettingsPage : ContentPage
         Preferences.Set("player_image", localPath);
     }
 
+    // slider event handler
     private void SoundVolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
         Preferences.Set("sound_volume", e.NewValue);
@@ -57,12 +64,18 @@ public partial class SettingsPage : ContentPage
         MusicVolumeValueLabel.Text = $"{(int)(e.NewValue * 100)}%";
     }
 
+    // save button event handler
     private void Save_Clicked(object sender, EventArgs e)
     {
         Preferences.Set("sound", SoundSwitch.IsToggled);
         Preferences.Set("music", MusicSwitch.IsToggled);
         Preferences.Set("difficulty", DifficultyPicker.SelectedIndex);
+
+        // save car and clear custom skin
+        Preferences.Set("car_index", CarPicker.SelectedIndex);
+        Preferences.Remove("player_image"); // <-- THIS FIXES IT
     }
+
 
     private async void Back_Clicked(object sender, EventArgs e)
     {

@@ -42,17 +42,28 @@ public partial class MainPage : ContentPage
     // save and load players chosen image helper
     private void LoadPlayerImage()
     {
-        string imagePath = Preferences.Get("player_image", string.Empty);
+        // 1️⃣ Use uploaded skin if it exists
+        string customImagePath = Preferences.Get("player_image", string.Empty);
 
-        if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+        if (!string.IsNullOrEmpty(customImagePath) && File.Exists(customImagePath))
         {
-            Player.Source = ImageSource.FromFile(imagePath);
+            Player.Source = ImageSource.FromFile(customImagePath);
+            return;
         }
-        else
+
+        // 2️⃣ Otherwise use selected car
+        int carIndex = Preferences.Get("car_index", 0);
+
+        Player.Source = carIndex switch
         {
-            Player.Source = "player.png"; // default image
-        }
+            0 => "car1.png",
+            1 => "car2.png",
+            2 => "car3.png",
+            _ => "car1.png"
+        };
     }
+
+
     // COINS
 
     //coins helper collected button
