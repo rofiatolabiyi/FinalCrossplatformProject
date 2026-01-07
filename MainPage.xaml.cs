@@ -101,6 +101,17 @@ public partial class MainPage : ContentPage
 
         MoveObstacle();
         CheckCollision();
+
+        // updating pickup frames
+        pickups.Update();
+        pickups.CheckOffScreen(GameArea.Height);
+
+        if (pickups.CheckCollected(Player))
+        {
+            score += 5; // bonus points
+            ScoreLabel.Text = $"Score: {score}";
+        }
+
     }
 
     // player
@@ -139,6 +150,12 @@ public partial class MainPage : ContentPage
             // adds speed, capped at 20
             if (score % 5 == 0 && obstacleSpeed < 20)
                 obstacleSpeed += 0.5;
+
+            if (score % 3 == 0) // every 3 points
+            {
+                pickups.Spawn(GameArea.Width);
+            }
+
         }
     }
 
