@@ -5,70 +5,83 @@
              Title="Settings"
              Shell.NavBarIsVisible="True">
 
-    <VerticalStackLayout Padding="24" Spacing="18">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
 
-        <!-- Header -->
-        <Label Text="Settings"
-               FontSize="28"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" />
+            <!-- Header -->
+            <Label Text="Settings"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
 
-        <!-- sound volume slider -->
-        <Label Text="Overa Volume" FontSize="18"/>
+            <!-- ===== SOUND TOGGLE ===== -->
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Sound"
+                       FontSize="18"
+                       VerticalOptions="Center" />
+                <Switch x:Name="SoundSwitch" />
+            </HorizontalStackLayout>
 
-        <Slider x:Name="SoundVolumeSlider"
-        Minimum="0"
-        Maximum="1"
-        Value="0.8"
-        ValueChanged="SoundVolumeSlider_ValueChanged"/>
+            <!-- Sound Volume -->
+            <Label Text="Sound Volume" FontSize="18"/>
+            <Slider x:Name="SoundVolumeSlider"
+                    Minimum="0"
+                    Maximum="1"
+                    Value="0.8"
+                    ValueChanged="SoundVolumeSlider_ValueChanged"/>
 
-        <Label x:Name="SoundVolumeValueLabel"
-       Text="80%"
-       FontSize="16"/>
+            <Label x:Name="SoundVolumeValueLabel"
+                   Text="80%"
+                   FontSize="16"/>
 
-        <!-- sound toggle button -->
-        <HorizontalStackLayout Spacing="12">
-            <Label Text="Sound"
-                   FontSize="18"
-                   VerticalOptions="Center" />
-            <Switch x:Name="SoundSwitch" />
-        </HorizontalStackLayout>
-        
-        
+            <!-- ===== MUSIC TOGGLE ===== -->
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Music"
+                       FontSize="18"
+                       VerticalOptions="Center" />
+                <Switch x:Name="MusicSwitch" />
+            </HorizontalStackLayout>
 
-        <!-- music toggle button -->
-        <HorizontalStackLayout Spacing="12">
-            <Label Text="Music"
-                   FontSize="18"
-                   VerticalOptions="Center" />
-            <Switch x:Name="MusicSwitch" />
-        </HorizontalStackLayout>
+            <!-- Music Volume -->
+            <Label Text="Music Volume" FontSize="18"/>
+            <Slider x:Name="MusicVolumeSlider"
+                    Minimum="0"
+                    Maximum="1"
+                    Value="0.5"
+                    ValueChanged="MusicVolumeSlider_ValueChanged"/>
 
-        <!-- difficulty drop down -->
-        <Label Text="Difficulty"
-               FontSize="18" />
+            <Label x:Name="MusicVolumeValueLabel"
+                   Text="50%"
+                   FontSize="16"/>
 
-        <Picker x:Name="DifficultyPicker"
-                Title="Select difficulty">
-            <Picker.Items>
-                <x:String>Easy</x:String>
-                <x:String>Normal</x:String>
-                <x:String>Hard</x:String>
-            </Picker.Items>
-        </Picker>
+            <!-- ===== DIFFICULTY ===== -->
+            <Label Text="Difficulty"
+                   FontSize="18" />
 
-        <!-- Buttons -->
-        <Button Text="Save"
-                FontSize="18"
-                Clicked="Save_Clicked" />
+            <Picker x:Name="DifficultyPicker"
+                    Title="Select difficulty">
+                <Picker.Items>
+                    <x:String>Easy</x:String>
+                    <x:String>Normal</x:String>
+                    <x:String>Hard</x:String>
+                </Picker.Items>
+            </Picker>
 
-        <Button Text="Change Character Image"
-        Clicked="ChangeCharacter_Clicked" />
+            <!-- ===== CHARACTER IMAGE ===== -->
+            <Button Text="Change Character Image"
+                    FontSize="18"
+                    Clicked="ChangeCharacter_Clicked" />
 
+            <!-- ===== ACTION BUTTONS ===== -->
+            <Button Text="Save"
+                    FontSize="18"
+                    Clicked="Save_Clicked" />
 
-        <Button Text="Back"
-                FontSize="18"
-                Clicked="Back_Clicked" />
+            <Button Text="Back"
+                    FontSize="18"
+                    Clicked="Back_Clicked" />
 
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
+

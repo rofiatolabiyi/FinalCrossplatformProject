@@ -1,28 +1,30 @@
 ﻿using Microsoft.Maui.Storage;
 using System.IO;
 
-
 namespace CrossplatFinal;
 
 public partial class SettingsPage : ContentPage
 {
-    //constructor
     public SettingsPage()
     {
         InitializeComponent();
-
-        // overall sound settings
-        double vol = Preferences.Get("sound_volume", 0.8);
-        SoundVolumeSlider.Value = vol;
-        SoundVolumeValueLabel.Text = $"{(int)(vol * 100)}%";
 
         // load saved values (defaults)
         SoundSwitch.IsToggled = Preferences.Get("sound", true);
         MusicSwitch.IsToggled = Preferences.Get("music", true);
         DifficultyPicker.SelectedIndex = Preferences.Get("difficulty", 1);
+
+        // sound volume
+        double soundVol = Preferences.Get("sound_volume", 0.8);
+        SoundVolumeSlider.Value = soundVol;
+        SoundVolumeValueLabel.Text = $"{(int)(soundVol * 100)}%";
+
+        // music volume
+        double musicVol = Preferences.Get("music_volume", 0.5);
+        MusicVolumeSlider.Value = musicVol;
+        MusicVolumeValueLabel.Text = $"{(int)(musicVol * 100)}%";
     }
 
-    // choosing images for char
     private async void ChangeCharacter_Clicked(object sender, EventArgs e)
     {
         var result = await FilePicker.PickAsync(new PickOptions
@@ -34,14 +36,12 @@ public partial class SettingsPage : ContentPage
         if (result == null)
             return;
 
-        // save image 
         string localPath = Path.Combine(FileSystem.AppDataDirectory, "player.png");
 
         using var sourceStream = await result.OpenReadAsync();
         using var localFileStream = File.Create(localPath);
         await sourceStream.CopyToAsync(localFileStream);
 
-        // ave path
         Preferences.Set("player_image", localPath);
     }
 
@@ -51,6 +51,11 @@ public partial class SettingsPage : ContentPage
         SoundVolumeValueLabel.Text = $"{(int)(e.NewValue * 100)}%";
     }
 
+    private void MusicVolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        Preferences.Set("music_volume", e.NewValue);
+        MusicVolumeValueLabel.Text = $"{(int)(e.NewValue * 100)}%";
+    }
 
     private void Save_Clicked(object sender, EventArgs e)
     {
@@ -64,5 +69,6 @@ public partial class SettingsPage : ContentPage
         await Shell.Current.GoToAsync("..");
     }
 }
+
 
 
