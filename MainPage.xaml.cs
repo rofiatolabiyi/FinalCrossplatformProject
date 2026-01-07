@@ -182,7 +182,8 @@ public partial class MainPage : ContentPage
 
     private void GameLoop(object? sender, EventArgs e)
     {
-        if (!isGameRunning) return;
+        if (!isGameRunning || !GameArea.IsVisible)
+            return;
 
         MoveObstacle();
 
@@ -319,10 +320,28 @@ public partial class MainPage : ContentPage
 
     protected override void OnDisappearing()
     {
+        StopGameLoop();
+
         coinPlayer?.Stop();
         crashPlayer?.Stop();
+        musicPlayer?.Stop();
+
         base.OnDisappearing();
     }
+
+    //preventing crashing when closes randomly
+    private void StopGameLoop()
+    {
+        isGameRunning = false;
+
+        if (gameTimer != null)
+        {
+            gameTimer.Tick -= GameLoop;   // IMPORTANT: detach handler
+            gameTimer.Stop();
+            gameTimer = null;
+        }
+    }
+
 
     // reset 
     private void ResetPositions()
