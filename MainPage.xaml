@@ -97,37 +97,36 @@
 
         <!-- SCORES -->
         <Button x:Name="CoinsButton"
-        IsVisible="False"
         Text="🪙 Coins: 0"
         FontSize="18"
         Padding="10"
         BackgroundColor="#222"
         TextColor="Gold"
-        AbsoluteLayout.LayoutBounds="0.5,0.15,220,45"
+        AbsoluteLayout.LayoutBounds="1,0,220,45"
         AbsoluteLayout.LayoutFlags="PositionProportional"
-        Clicked="CoinsButton_Clicked"/>
+        Clicked="CoinsButton_Clicked" />
+
 
         <Button x:Name="ScoreButton"
-        IsVisible="False"
         Text="Score: 0"
         FontSize="18"
         Padding="10"
         BackgroundColor="#222"
         TextColor="White"
-        AbsoluteLayout.LayoutBounds="0.5,0.05,220,45"
+        AbsoluteLayout.LayoutBounds="0.5,0,220,45"
         AbsoluteLayout.LayoutFlags="PositionProportional"
-        Clicked="ScoreButton_Clicked"/>
+        Clicked="ScoreButton_Clicked" />
 
         <Button x:Name="HighScoreButton"
-        IsVisible="False"
         Text="High Score: 0"
         FontSize="18"
         Padding="10"
         BackgroundColor="#222"
         TextColor="Gold"
-        AbsoluteLayout.LayoutBounds="0.5,0.11,220,45"
+        AbsoluteLayout.LayoutBounds="0,0,220,45"
         AbsoluteLayout.LayoutFlags="PositionProportional"
-        Clicked="HighScoreButton_Clicked"/>
+        Clicked="HighScoreButton_Clicked" />
+
 
 
     </AbsoluteLayout>

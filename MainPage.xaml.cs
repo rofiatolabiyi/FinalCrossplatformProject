@@ -7,25 +7,20 @@ namespace CrossplatFinal;
 public partial class MainPage : ContentPage
 {
     // objects
-    private Player player;
-    private Pickups pickups;
+    private readonly Player player;
+    private readonly Pickups pickups;
 
     private bool isGameRunning;
     private int score;
     private double obstacleSpeed = 6;
 
-    //shield fields
-    private bool shieldActive;
-    private IDispatcherTimer shieldTimer;
-
-
     // audio
-    private IAudioPlayer coinPlayer;
-    private IAudioPlayer crashPlayer;
-    private IAudioPlayer musicPlayer;
+    private IAudioPlayer? coinPlayer;
+    private IAudioPlayer? crashPlayer;
+    private IAudioPlayer? musicPlayer;
 
     // timer
-    private IDispatcherTimer gameTimer;
+    private IDispatcherTimer? gameTimer;
     private readonly Random random = new();
 
     public MainPage()
@@ -39,22 +34,37 @@ public partial class MainPage : ContentPage
         UpdateHighScoreButton();
         UpdateCoinsButton();
 
+        // keep HUD hidden until game starts (if you set IsVisible="False" in XAML, this is harmless)
+        CoinsButton.IsVisible = false;
+        ScoreButton.IsVisible = false;
+        HighScoreButton.IsVisible = false;
+
         GameArea.SizeChanged += OnGameAreaSizeChanged;
 
         _ = InitAudio();
     }
 
-    // choosing player image
+    // ---------- PLAYER IMAGE (Cars + Custom Skin) ----------
     private void LoadPlayerImage()
     {
-        string customImagePath = Preferences.Get("player_image", string.Empty);
+        // If user chose "custom skin mode", try to load it
+        bool useCustom = Preferences.Get("use_custom_skin", false);
 
-        if (!string.IsNullOrEmpty(customImagePath) && File.Exists(customImagePath))
+        if (useCustom)
         {
-            Player.Source = ImageSource.FromFile(customImagePath);
-            return;
+            string customPath = Preferences.Get("player_image", string.Empty);
+
+            if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
+            {
+                Player.Source = ImageSource.FromFile(customPath);
+                return;
+            }
+
+            // File missing -> disable custom mode so cars show
+            Preferences.Set("use_custom_skin", false);
         }
 
+        // Otherwise load selected car
         int carIndex = Preferences.Get("car_index", 0);
 
         Player.Source = carIndex switch
@@ -66,26 +76,7 @@ public partial class MainPage : ContentPage
         };
     }
 
-    //shield helper
-    private void ActivateShield(int seconds = 5)
-    {
-        shieldActive = true;
-        if (ShieldIcon != null) ShieldIcon.IsVisible = true;
-
-        shieldTimer?.Stop();
-        shieldTimer = Dispatcher.CreateTimer();
-        shieldTimer.Interval = TimeSpan.FromSeconds(seconds);
-        shieldTimer.Tick += (s, e) =>
-        {
-            shieldTimer.Stop();
-            shieldActive = false;
-            if (ShieldIcon != null) ShieldIcon.IsVisible = false;
-        };
-        shieldTimer.Start();
-    }
-
-
-    // sound methods
+    // ---------- AUDIO ----------
     private async Task InitAudio()
     {
         try
@@ -106,14 +97,15 @@ public partial class MainPage : ContentPage
         }
         catch
         {
-            coinPlayer = crashPlayer = musicPlayer = null;
+            coinPlayer = null;
+            crashPlayer = null;
+            musicPlayer = null;
         }
     }
 
     private void ApplySoundVolume()
     {
         double vol = Preferences.Get("sound_volume", 0.8);
-
         if (coinPlayer != null) coinPlayer.Volume = vol;
         if (crashPlayer != null) crashPlayer.Volume = vol;
     }
@@ -127,14 +119,18 @@ public partial class MainPage : ContentPage
 
         musicPlayer.Volume = musicOn ? vol : 0;
 
-        if (musicOn && !musicPlayer.IsPlaying)
-            musicPlayer.Play();
-        else if (!musicOn)
+        if (musicOn)
+        {
+            if (!musicPlayer.IsPlaying)
+                musicPlayer.Play();
+        }
+        else
+        {
             musicPlayer.Stop();
+        }
     }
 
-
-    // game ui 
+    // ---------- HUD ----------
     private void UpdateCoinsButton()
     {
         CoinsButton.Text = $"🪙 Coins: {Preferences.Get("coins", 0)}";
@@ -142,11 +138,10 @@ public partial class MainPage : ContentPage
 
     private void UpdateHighScoreButton()
     {
-        HighScoreButton.Text =
-            $"High Score: {Preferences.Get("highscore", 0)}";
+        HighScoreButton.Text = $"High Score: {Preferences.Get("highscore", 0)}";
     }
 
-    // choosing difficulty and handling buttons when visible
+    // ---------- START / LOOP ----------
     private void StartButton_Clicked(object sender, EventArgs e)
     {
         int difficulty = Preferences.Get("difficulty", 1);
@@ -168,8 +163,10 @@ public partial class MainPage : ContentPage
 
         score = 0;
         ScoreButton.Text = "Score: 0";
-
         isGameRunning = true;
+
+        UpdateHighScoreButton();
+        UpdateCoinsButton();
 
         ResetPositions();
         StartGameLoop();
@@ -184,7 +181,7 @@ public partial class MainPage : ContentPage
         gameTimer.Start();
     }
 
-    private void GameLoop(object sender, EventArgs e)
+    private void GameLoop(object? sender, EventArgs e)
     {
         if (!isGameRunning) return;
 
@@ -198,9 +195,7 @@ public partial class MainPage : ContentPage
             score += coinValue;
             ScoreButton.Text = $"Score: {score}";
 
-            Preferences.Set("coins",
-                Preferences.Get("coins", 0) + coinValue);
-
+            Preferences.Set("coins", Preferences.Get("coins", 0) + coinValue);
             UpdateCoinsButton();
 
             if (Preferences.Get("sound", true))
@@ -210,7 +205,7 @@ public partial class MainPage : ContentPage
         CheckCollision();
     }
 
-    // swipe handlers
+    // ---------- INPUT ----------
     private void OnTapLeft(object sender, EventArgs e)
     {
         if (!isGameRunning) return;
@@ -228,13 +223,12 @@ public partial class MainPage : ContentPage
     private void OnSwipeLeft(object s, SwipedEventArgs e) => OnTapLeft(s, e);
     private void OnSwipeRight(object s, SwipedEventArgs e) => OnTapRight(s, e);
 
-    // obstacles
+    // ---------- OBSTACLES ----------
     private void MoveObstacle()
     {
         Obstacle.TranslationY += obstacleSpeed;
 
-        if (Obstacle.Y + Obstacle.TranslationY >
-            GameArea.Height + Obstacle.Height)
+        if (Obstacle.Y + Obstacle.TranslationY > GameArea.Height + Obstacle.Height)
         {
             RespawnObstacle();
 
@@ -249,7 +243,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-    // spawning obstacles
     private void RespawnObstacle()
     {
         if (GameArea.Width <= 0) return;
@@ -257,19 +250,16 @@ public partial class MainPage : ContentPage
         int lane = random.Next(0, 3);
         double laneWidth = GameArea.Width / 3;
 
-        double centerX =
-            (lane * laneWidth) + (laneWidth / 2);
+        double centerX = (lane * laneWidth) + (laneWidth / 2);
 
-        Obstacle.TranslationX =
-            centerX - (Obstacle.Width / 2) - Obstacle.X;
-
+        Obstacle.TranslationX = centerX - (Obstacle.Width / 2) - Obstacle.X;
         Obstacle.TranslationY = -Obstacle.Height;
 
         Obstacle.Opacity = 0;
-        Obstacle.FadeTo(1, 200);
+        _ = Obstacle.FadeTo(1, 200);
     }
 
-    // colission
+    // ---------- COLLISION ----------
     private void CheckCollision()
     {
         Rect playerRect = new(
@@ -288,13 +278,13 @@ public partial class MainPage : ContentPage
             EndGame();
     }
 
-    // end and reset
+    // ---------- END GAME ----------
     private async void EndGame()
     {
         isGameRunning = false;
         gameTimer?.Stop();
 
-        //crash animation
+        // crash animation
         await Player.RotateTo(20, 150);
         await Player.FadeTo(0, 200);
         await Player.FadeTo(1, 200);
@@ -311,22 +301,24 @@ public partial class MainPage : ContentPage
 
         StartScreen.IsVisible = true;
         GameArea.IsVisible = false;
+
         CoinsButton.IsVisible = false;
         ScoreButton.IsVisible = false;
         HighScoreButton.IsVisible = false;
     }
 
-    // calling methods on opening
+    // ---------- LIFECYCLE ----------
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
         LoadPlayerImage();
         ApplySoundVolume();
         UpdateMusicPlayback();
         UpdateCoinsButton();
+        UpdateHighScoreButton();
     }
 
-    //// calling methods on closing
     protected override void OnDisappearing()
     {
         coinPlayer?.Stop();
@@ -334,20 +326,23 @@ public partial class MainPage : ContentPage
         base.OnDisappearing();
     }
 
+    // ---------- RESET / SIZE ----------
     private void ResetPositions()
     {
         player.Reset();
         _ = player.MoveToLaneAnimated(GameArea.Width);
+
+        pickups.CheckOffScreen(GameArea.Height); // harmless reset safety
         RespawnObstacle();
     }
 
-    private void OnGameAreaSizeChanged(object sender, EventArgs e)
+    private void OnGameAreaSizeChanged(object? sender, EventArgs e)
     {
         GameArea.SizeChanged -= OnGameAreaSizeChanged;
         ResetPositions();
     }
 
-    // button event handlers
+    // ---------- BUTTONS ----------
     private async void SettingsButton_Clicked(object sender, EventArgs e)
         => await Shell.Current.GoToAsync(nameof(SettingsPage));
 

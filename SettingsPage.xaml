@@ -73,6 +73,12 @@
                     FontSize="18"
                     Clicked="ChangeCharacter_Clicked" />
 
+            <!--choose between custom and 3 options button-->
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Use Custom Skin" VerticalOptions="Center" />
+                <Switch x:Name="UseCustomSkinSwitch" />
+            </HorizontalStackLayout>
+
             <!-- choosing from 3 cars-->
             <Label Text="Choose Your Car"
                 FontSize="18"

@@ -15,6 +15,7 @@ public partial class SettingsPage : ContentPage
 
 
         // load saved values (defaults)
+        UseCustomSkinSwitch.IsToggled = Preferences.Get("use_custom_skin", false);
         SoundSwitch.IsToggled = Preferences.Get("sound", true);
         MusicSwitch.IsToggled = Preferences.Get("music", true);
         DifficultyPicker.SelectedIndex = Preferences.Get("difficulty", 1);
@@ -49,6 +50,8 @@ public partial class SettingsPage : ContentPage
         await sourceStream.CopyToAsync(localFileStream);
 
         Preferences.Set("player_image", localPath);
+        Preferences.Set("use_custom_skin", true);
+        UseCustomSkinSwitch.IsToggled = true;
     }
 
     // slider event handler
@@ -71,10 +74,16 @@ public partial class SettingsPage : ContentPage
         Preferences.Set("music", MusicSwitch.IsToggled);
         Preferences.Set("difficulty", DifficultyPicker.SelectedIndex);
 
-        // save car and clear custom skin
         Preferences.Set("car_index", CarPicker.SelectedIndex);
-        Preferences.Remove("player_image"); // <-- THIS FIXES IT
+
+        // ✅ Decide mode based on the toggle
+        bool useCustom = UseCustomSkinSwitch.IsToggled;
+        Preferences.Set("use_custom_skin", useCustom);
+
+        // ✅ DO NOT remove player_image here
+        // Preferences.Remove("player_image");  <-- remove this line
     }
+
 
 
     private async void Back_Clicked(object sender, EventArgs e)
