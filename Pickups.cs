@@ -28,11 +28,48 @@ public class Pickups
         pickup.IsVisible = true;
     }
 
-    // Move coin down
+    // move coin down
     public void Update()
     {
         if (!pickup.IsVisible) return;
 
         pickup.TranslationY += speed;
     }
+
+    // check if player collected coin
+    public bool CheckCollected(Image player)
+    {
+        if (!pickup.IsVisible) return false;
+
+        Rect playerRect = new(
+            player.X + player.TranslationX,
+            player.Y + player.TranslationY,
+            player.Width,
+            player.Height);
+
+        Rect pickupRect = new(
+            pickup.X + pickup.TranslationX,
+            pickup.Y + pickup.TranslationY,
+            pickup.Width,
+            pickup.Height);
+
+        if (playerRect.IntersectsWith(pickupRect))
+        {
+            pickup.IsVisible = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    // hide coin if it goes off screen
+    public void CheckOffScreen(double gameHeight)
+    {
+        if (pickup.IsVisible &&
+            pickup.Y + pickup.TranslationY > gameHeight)
+        {
+            pickup.IsVisible = false;
+        }
+    }
+
 }
