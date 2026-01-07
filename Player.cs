@@ -2,102 +2,74 @@
 
 namespace CrossplatFinal;
 
-public enum PickupType
+public class Player
 {
-    Coin,
-    Shield
-}
+    public Image View { get; }
 
-public class Pickups
-{
-    private readonly Image pickupView;
-    private readonly Random random = new();
+    // lanes: 0 = left, 1 = middle, 2 = right
+    public int Lane { get; private set; } = 1;
 
-    private double speed = 6;
+    // size of car
+    public double Size { get; } = 160;
 
-    public bool IsActive { get; private set; }
-    public PickupType CurrentType { get; private set; } = PickupType.Coin;
-
-    // coin images (3 options)
-    private readonly string[] coinImages = { "coin1.png", "coin2.png", "coin3.png" };
-
-    public Pickups(Image pickupView)
+    // constructor
+    public Player(Image view)
     {
-        this.pickupView = pickupView;
-        pickupView.IsVisible = false;
+        View = view;
     }
 
-    public void SetSpeed(double obstacleSpeed) => speed = obstacleSpeed;
-
-    public void Spawn(double gameAreaWidth)
+    // Move player to the current lane
+    public void MoveToLane(double gameAreaWidth)
     {
         if (gameAreaWidth <= 0) return;
 
-        // 25% chance shield, 75% coin
-        CurrentType = random.NextDouble() < 0.25 ? PickupType.Shield : PickupType.Coin;
-
-        // choose image
-        if (CurrentType == PickupType.Shield)
-            pickupView.Source = "shield.png";
-        else
-            pickupView.Source = coinImages[random.Next(coinImages.Length)];
-
-        // lane positioning
-        int lane = random.Next(0, 3);
         double laneWidth = gameAreaWidth / 3;
-        double targetX = (laneWidth * lane) + (laneWidth / 2) - (pickupView.WidthRequest / 2);
+        double targetX = (laneWidth * Lane) + (laneWidth / 2) - (Size / 2);
 
-        pickupView.TranslationY = -pickupView.HeightRequest;
-        pickupView.TranslationX = targetX - pickupView.X;
-
-        pickupView.IsVisible = true;
-        IsActive = true;
+        // Move using translation
+        View.TranslationX = targetX - View.X;
     }
 
-    public void Update()
+    public async Task MoveToLaneAnimated(double gameAreaWidth)
     {
-        if (!IsActive) return;
-        pickupView.TranslationY += speed;
+        if (gameAreaWidth <= 0) return;
+
+        double laneWidth = gameAreaWidth / 3;
+        double targetX = (laneWidth * Lane) + (laneWidth / 2) - (Size / 2);
+        double translationX = targetX - View.X;
+
+        double tilt = Lane == 0 ? -10 : Lane == 2 ? 10 : 0;
+
+        await Task.WhenAll(
+            View.TranslateTo(translationX, View.TranslationY, 120, Easing.CubicOut),
+            View.RotateTo(tilt, 120, Easing.CubicOut)
+        );
+
+        await View.RotateTo(0, 80, Easing.CubicIn);
     }
 
-    public void CheckOffScreen(double gameAreaHeight)
+    // Move left
+    public void MoveLeft()
     {
-        if (!IsActive) return;
-
-        if (pickupView.Y + pickupView.TranslationY > gameAreaHeight + pickupView.HeightRequest)
-        {
-            pickupView.IsVisible = false;
-            IsActive = false;
-        }
+        if (Lane > 0)
+            Lane--;
     }
 
-    public bool TryCollect(Image playerView, out PickupType type)
+    // Move right
+    public void MoveRight()
     {
-        type = PickupType.Coin;
-        if (!IsActive || !pickupView.IsVisible) return false;
+        if (Lane < 2)
+            Lane++;
+    }
 
-        Rect playerRect = new(
-            playerView.X + playerView.TranslationX,
-            playerView.Y + playerView.TranslationY,
-            playerView.Width,
-            playerView.Height);
-
-        Rect pickupRect = new(
-            pickupView.X + pickupView.TranslationX,
-            pickupView.Y + pickupView.TranslationY,
-            pickupView.Width,
-            pickupView.Height);
-
-        if (playerRect.IntersectsWith(pickupRect))
-        {
-            type = CurrentType;
-            pickupView.IsVisible = false;
-            IsActive = false;
-            return true;
-        }
-
-        return false;
+    // Reset player to middle lane
+    public void Reset()
+    {
+        Lane = 1;
+        View.TranslationX = 0;
     }
 }
+
+
 
 
