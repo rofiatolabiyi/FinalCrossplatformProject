@@ -66,9 +66,14 @@
                      AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
                      AbsoluteLayout.LayoutFlags="PositionProportional">
 
-            <Label Text="My Runner Game"
+            <Label Text="My Traffic Game"
                    FontSize="32"
                    HorizontalOptions="Center"/>
+
+            <Button Text="SETTINGS"
+                FontSize="20"
+                Padding="20"
+                Clicked="SettingsButton_Clicked"/>
 
             <Button Text="START"
                     FontSize="20"
