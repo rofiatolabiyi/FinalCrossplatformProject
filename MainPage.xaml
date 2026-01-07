@@ -56,8 +56,8 @@
             <!-- Pickup -->
             <Image x:Name="Pickup"
                    Source="coin.png"
-                   WidthRequest="160"
-                   HeightRequest="160"
+                   WidthRequest="100"
+                   HeightRequest="100"
                    VerticalOptions="Start"
                    IsVisible="False"
                    Margin="0,0,0,30"/>
