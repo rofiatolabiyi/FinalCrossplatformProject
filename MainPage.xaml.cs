@@ -32,6 +32,17 @@ public partial class MainPage : ContentPage
     // start game
     private void StartButton_Clicked(object sender, EventArgs e)
     {
+        bool soundOn = Preferences.Get("sound", true);
+        int difficulty = Preferences.Get("difficulty", 1);
+
+        obstacleSpeed = difficulty switch
+        {
+            0 => 5,  // Easy
+            1 => 6,  // Normal
+            2 => 8,  // Hard
+            _ => 6
+        };
+
         StartScreen.IsVisible = false;
         GameArea.IsVisible = true;
 
