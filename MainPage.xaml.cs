@@ -34,7 +34,6 @@ public partial class MainPage : ContentPage
         UpdateHighScoreButton();
         UpdateCoinsButton();
 
-        // keep HUD hidden until game starts (if you set IsVisible="False" in XAML, this is harmless)
         CoinsButton.IsVisible = false;
         ScoreButton.IsVisible = false;
         HighScoreButton.IsVisible = false;
@@ -44,10 +43,10 @@ public partial class MainPage : ContentPage
         _ = InitAudio();
     }
 
-    // ---------- PLAYER IMAGE (Cars + Custom Skin) ----------
+    // player image
     private void LoadPlayerImage()
     {
-        // If user chose "custom skin mode", try to load it
+        //  user chose "custom skin mode", try to load it
         bool useCustom = Preferences.Get("use_custom_skin", false);
 
         if (useCustom)
@@ -60,11 +59,11 @@ public partial class MainPage : ContentPage
                 return;
             }
 
-            // File missing -> disable custom mode so cars show
+            // if no skin found, disable custom skin mode
             Preferences.Set("use_custom_skin", false);
         }
 
-        // Otherwise load selected car
+        // load selected car
         int carIndex = Preferences.Get("car_index", 0);
 
         Player.Source = carIndex switch
@@ -76,7 +75,7 @@ public partial class MainPage : ContentPage
         };
     }
 
-    // ---------- AUDIO ----------
+    // sound method and handlers
     private async Task InitAudio()
     {
         try
@@ -130,7 +129,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    // ---------- HUD ----------
+    // ui
     private void UpdateCoinsButton()
     {
         CoinsButton.Text = $"🪙 Coins: {Preferences.Get("coins", 0)}";
@@ -141,7 +140,7 @@ public partial class MainPage : ContentPage
         HighScoreButton.Text = $"High Score: {Preferences.Get("highscore", 0)}";
     }
 
-    // ---------- START / LOOP ----------
+    // difficulty and button 
     private void StartButton_Clicked(object sender, EventArgs e)
     {
         int difficulty = Preferences.Get("difficulty", 1);
@@ -205,7 +204,7 @@ public partial class MainPage : ContentPage
         CheckCollision();
     }
 
-    // ---------- INPUT ----------
+    // tap and swipe handlers
     private void OnTapLeft(object sender, EventArgs e)
     {
         if (!isGameRunning) return;
@@ -223,7 +222,7 @@ public partial class MainPage : ContentPage
     private void OnSwipeLeft(object s, SwipedEventArgs e) => OnTapLeft(s, e);
     private void OnSwipeRight(object s, SwipedEventArgs e) => OnTapRight(s, e);
 
-    // ---------- OBSTACLES ----------
+    // obstacles
     private void MoveObstacle()
     {
         Obstacle.TranslationY += obstacleSpeed;
@@ -259,7 +258,7 @@ public partial class MainPage : ContentPage
         _ = Obstacle.FadeTo(1, 200);
     }
 
-    // ---------- COLLISION ----------
+    // collision
     private void CheckCollision()
     {
         Rect playerRect = new(
@@ -278,7 +277,7 @@ public partial class MainPage : ContentPage
             EndGame();
     }
 
-    // ---------- END GAME ----------
+    // end
     private async void EndGame()
     {
         isGameRunning = false;
@@ -307,7 +306,6 @@ public partial class MainPage : ContentPage
         HighScoreButton.IsVisible = false;
     }
 
-    // ---------- LIFECYCLE ----------
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -326,7 +324,7 @@ public partial class MainPage : ContentPage
         base.OnDisappearing();
     }
 
-    // ---------- RESET / SIZE ----------
+    // reset 
     private void ResetPositions()
     {
         player.Reset();
@@ -342,7 +340,7 @@ public partial class MainPage : ContentPage
         ResetPositions();
     }
 
-    // ---------- BUTTONS ----------
+    // buttons event handlers
     private async void SettingsButton_Clicked(object sender, EventArgs e)
         => await Shell.Current.GoToAsync(nameof(SettingsPage));
 
