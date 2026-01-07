@@ -6,13 +6,13 @@ public class Player
 {
     public Image View { get; }
 
-    // Current lane: 0 = left, 1 = middle, 2 = right
+    // lanes: 0 = left, 1 = middle, 2 = right
     public int Lane { get; private set; } = 1;
 
-    // Size of the car (matches XAML)
+    // size of car
     public double Size { get; } = 160;
 
-    // Constructor
+    // constructor
     public Player(Image view)
     {
         View = view;

@@ -34,7 +34,7 @@
                    Text="80%"
                    FontSize="16"/>
 
-            <!-- ===== MUSIC TOGGLE ===== -->
+            <!-- music toggle -->
             <HorizontalStackLayout Spacing="12">
                 <Label Text="Music"
                        FontSize="18"
@@ -54,7 +54,7 @@
                    Text="50%"
                    FontSize="16"/>
 
-            <!-- ===== DIFFICULTY ===== -->
+            <!-- difficulty level]-->
             <Label Text="Difficulty"
                    FontSize="18" />
 
@@ -67,10 +67,24 @@
                 </Picker.Items>
             </Picker>
 
+            
             <!-- ===== CHARACTER IMAGE ===== -->
             <Button Text="Change Character Image"
                     FontSize="18"
                     Clicked="ChangeCharacter_Clicked" />
+
+            <!-- choosing from 3 cars-->
+            <Label Text="Choose Your Car"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <Picker x:Name="CarPicker">
+                <Picker.Items>
+                    <x:String>Car 1</x:String>
+                    <x:String>Car 2</x:String>
+                    <x:String>Car 3</x:String>
+                </Picker.Items>
+            </Picker>
 
             <!-- ===== ACTION BUTTONS ===== -->
             <Button Text="Save"

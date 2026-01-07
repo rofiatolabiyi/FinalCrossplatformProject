@@ -28,7 +28,8 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         LoadPlayerImage();
-        UpdateHighScoreLabel();
+        UpdateHighScoreButton();
+        UpdateCoinsButton();
 
         player = new Player(Player);
         pickups = new Pickups(Pickup);
@@ -52,8 +53,32 @@ public partial class MainPage : ContentPage
             Player.Source = "player.png"; // default image
         }
     }
+    // COINS
 
-    // async method called from constructor
+    //coins helper collected button
+    private void UpdateCoinsButton()
+    {
+        int totalCoins = Preferences.Get("coins", 0);
+        CoinsButton.Text = $"🪙 Coins: {totalCoins}";
+    }
+    //button handler
+    private async void CoinsButton_Clicked(object sender, EventArgs e)
+    {
+        bool reset = await DisplayAlert(
+            "Coins",
+            "Reset total coins?",
+            "Yes",
+            "No");
+
+        if (reset)
+        {
+            Preferences.Set("coins", 0);
+            UpdateCoinsButton();
+        }
+    }
+
+
+    // async sound method called from constructor
     private async Task InitAudio()
     {
         try
@@ -86,17 +111,24 @@ public partial class MainPage : ContentPage
     private void UpdateMusicPlayback()
     {
         bool musicOn = Preferences.Get("music", true);
+        double musicVol = Preferences.Get("music_volume", 0.5);
+
+        if (musicPlayer == null)
+            return;
+
+        musicPlayer.Volume = musicOn ? musicVol : 0;
 
         if (musicOn)
         {
-            if (musicPlayer != null && !musicPlayer.IsPlaying)
+            if (!musicPlayer.IsPlaying)
                 musicPlayer.Play();
         }
         else
         {
-            musicPlayer?.Stop();
+            musicPlayer.Stop();
         }
     }
+
 
     // sound slider helper method
     private void ApplySoundVolume()
@@ -109,10 +141,11 @@ public partial class MainPage : ContentPage
 
 
     //highscore
-    private void UpdateHighScoreLabel()
+    private void UpdateHighScoreButton()
     {
         int highScore = Preferences.Get("highscore", 0);
-        HighScoreLabel.Text = $"High Score: {highScore}";
+        HighScoreButton.Text = $"High Score: {highScore}";
+
     }
 
     private void OnGameAreaSizeChanged(object sender, EventArgs e)
@@ -137,12 +170,16 @@ public partial class MainPage : ContentPage
 
         StartScreen.IsVisible = false;
         GameArea.IsVisible = true;
+        CoinsButton.IsVisible = true;
+        ScoreButton.IsVisible = true;
+        HighScoreButton.IsVisible = true;
 
         score = 0;
-        ScoreLabel.Text = "Score: 0";
+        ScoreButton.Text = "Score: 0";
+
         isGameRunning = true;
 
-        UpdateHighScoreLabel();
+        UpdateHighScoreButton();
 
         ResetPositions();
         StartGameLoop();
@@ -171,7 +208,13 @@ public partial class MainPage : ContentPage
         if (pickups.TryCollect(Player, out int coinValue))
         {
             score += coinValue;
-            ScoreLabel.Text = $"Score: {score}";
+            ScoreButton.Text = $"Score: {score}";
+
+            int totalCoins = Preferences.Get("coins", 0);
+            totalCoins += coinValue;
+            Preferences.Set("coins", totalCoins);
+
+            UpdateCoinsButton();
 
             // play coin if sounds on
             bool soundOn = Preferences.Get("sound", true);
@@ -213,7 +256,7 @@ public partial class MainPage : ContentPage
             RespawnObstacle();
 
             score++;
-            ScoreLabel.Text = $"Score: {score}";
+            ScoreButton.Text = $"Score: {score}";
 
             // adds speed, capped at 20
             if (score % 5 == 0 && obstacleSpeed < 20)
@@ -266,8 +309,29 @@ public partial class MainPage : ContentPage
     private void ResetHighScore_Clicked(object sender, EventArgs e)
     {
         Preferences.Set("highscore", 0);
-        UpdateHighScoreLabel();
+        UpdateHighScoreButton();
     }
+
+    private void ScoreButton_Clicked(object sender, EventArgs e)
+    {
+       
+    }
+
+    private async void HighScoreButton_Clicked(object sender, EventArgs e)
+    {
+        bool reset = await DisplayAlert(
+            "High Score",
+            "Reset high score?",
+            "Yes",
+            "No");
+
+        if (reset)
+        {
+            Preferences.Set("highscore", 0);
+            UpdateHighScoreButton();
+        }
+    }
+
 
     protected override void OnAppearing()
     {
@@ -275,7 +339,7 @@ public partial class MainPage : ContentPage
         LoadPlayerImage();
         ApplySoundVolume();
         UpdateMusicPlayback();
-
+        UpdateCoinsButton();
     }
 
     protected override void OnDisappearing()
@@ -310,10 +374,14 @@ public partial class MainPage : ContentPage
         if (score > highScore)
             Preferences.Set("highscore", score);
 
-        UpdateHighScoreLabel();
+        UpdateHighScoreButton();
 
         StartScreen.IsVisible = true;
         GameArea.IsVisible = false;
+        CoinsButton.IsVisible = false;
+        ScoreButton.IsVisible = false;
+        HighScoreButton.IsVisible = false;
+
     }
 }
 

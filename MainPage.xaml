@@ -1,19 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="CrossplatFinal.MainPage"
              Title=""
              Shell.NavBarIsVisible="False">
 
     <AbsoluteLayout>
 
-        <!-- background video -->
+        <!-- background -->
         <Image Source="road.png"
        Aspect="AspectFill"
+       InputTransparent="True"
        AbsoluteLayout.LayoutBounds="0,0,1,1"
        AbsoluteLayout.LayoutFlags="All" />
-
 
 
         <!-- GAME AREA -->
@@ -32,12 +31,12 @@
                                         Swiped="OnSwipeRight"/>
             </Grid.GestureRecognizers>
 
-            <!-- Lanes (transparent overlays, so background video shows) -->
+            <!-- lanes -->
             <BoxView Grid.Column="0" Color="Transparent"/>
             <BoxView Grid.Column="1" Color="Transparent"/>
             <BoxView Grid.Column="2" Color="Transparent"/>
 
-            <!-- Player -->
+            <!-- player -->
             <Image x:Name="Player"
                    Source="player.png"
                    WidthRequest="160"
@@ -45,7 +44,7 @@
                    VerticalOptions="End"
                    Margin="0,0,0,30" />
 
-            <!-- Obstacle -->
+            <!-- obstacle -->
             <Image x:Name="Obstacle"
                    Source="opponent.png"
                    WidthRequest="160"
@@ -53,7 +52,7 @@
                    VerticalOptions="Start"
                    Margin="0,0,0,30"/>
 
-            <!-- Pickup -->
+            <!-- pickup -->
             <Image x:Name="Pickup"
                    Source="coin.png"
                    WidthRequest="100"
@@ -88,22 +87,40 @@
                     Clicked="StartButton_Clicked"/>
         </StackLayout>
 
-        <!-- SCORE -->
-        
-        <Label x:Name="HighScoreLabel"
-            Text="High Score: 0"
-            TextColor="Pink"
-            FontSize="22"
-            AbsoluteLayout.LayoutBounds="0.5,0.10,250,50"
-            AbsoluteLayout.LayoutFlags="PositionProportional"/>
+        <!-- SCORES -->
+        <Button x:Name="CoinsButton"
+        IsVisible="False"
+        Text="🪙 Coins: 0"
+        FontSize="18"
+        Padding="10"
+        BackgroundColor="#222"
+        TextColor="Gold"
+        AbsoluteLayout.LayoutBounds="0.5,0.15,220,45"
+        AbsoluteLayout.LayoutFlags="PositionProportional"
+        Clicked="CoinsButton_Clicked"/>
 
-        
-        <Label x:Name="ScoreLabel"
-               Text="Score: 0"
-               TextColor="Pink"
-               FontSize="22"
-               AbsoluteLayout.LayoutBounds="0.5,0.05,200,50"
-               AbsoluteLayout.LayoutFlags="PositionProportional"/>
+        <Button x:Name="ScoreButton"
+        IsVisible="False"
+        Text="Score: 0"
+        FontSize="18"
+        Padding="10"
+        BackgroundColor="#222"
+        TextColor="White"
+        AbsoluteLayout.LayoutBounds="0.5,0.05,220,45"
+        AbsoluteLayout.LayoutFlags="PositionProportional"
+        Clicked="ScoreButton_Clicked"/>
+
+        <Button x:Name="HighScoreButton"
+        IsVisible="False"
+        Text="High Score: 0"
+        FontSize="18"
+        Padding="10"
+        BackgroundColor="#222"
+        TextColor="Gold"
+        AbsoluteLayout.LayoutBounds="0.5,0.11,220,45"
+        AbsoluteLayout.LayoutFlags="PositionProportional"
+        Clicked="HighScoreButton_Clicked"/>
+
 
     </AbsoluteLayout>
 </ContentPage>
