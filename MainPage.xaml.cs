@@ -1,17 +1,21 @@
 ﻿using Plugin.Maui.Audio;
 using Microsoft.Maui.Storage;
-
+using System.IO;
 
 namespace CrossplatFinal;
 
 public partial class MainPage : ContentPage
 {
-    // player object
+    // objects
     private Player player;
     private Pickups pickups;
     private bool isGameRunning;
     private int score;
     private double obstacleSpeed = 6;
+
+    // audio
+    private IAudioPlayer coinPlayer;
+    private IAudioPlayer crashPlayer;
 
     // timer
     private IDispatcherTimer gameTimer;
@@ -28,8 +32,9 @@ public partial class MainPage : ContentPage
         pickups = new Pickups(Pickup);
 
         GameArea.SizeChanged += OnGameAreaSizeChanged;
-    }
 
+        _ = InitAudio(); // fire-and-forget init
+    }
 
     // save and load players chosen image helper
     private void LoadPlayerImage()
@@ -43,6 +48,25 @@ public partial class MainPage : ContentPage
         else
         {
             Player.Source = "player.png"; // default image
+        }
+    }
+
+    // async method called from constructor
+    private async Task InitAudio()
+    {
+        try
+        {
+            coinPlayer = AudioManager.Current.CreatePlayer(
+                await FileSystem.OpenAppPackageFileAsync("coin.mp3"));
+
+            crashPlayer = AudioManager.Current.CreatePlayer(
+                await FileSystem.OpenAppPackageFileAsync("crash.mp3"));
+        }
+        catch(Exception)
+        {
+            // if files are empty dont crash
+            coinPlayer = null;
+            crashPlayer = null;
         }
     }
 
@@ -61,7 +85,7 @@ public partial class MainPage : ContentPage
     // start game
     private void StartButton_Clicked(object sender, EventArgs e)
     {
-        // Load settings
+        // load settings
         int difficulty = Preferences.Get("difficulty", 1);
 
         obstacleSpeed = difficulty switch
@@ -109,11 +133,15 @@ public partial class MainPage : ContentPage
         {
             score += coinValue;
             ScoreLabel.Text = $"Score: {score}";
+
+            // play coin if sounds on
+            bool soundOn = Preferences.Get("sound", true);
+            if (soundOn)
+                coinPlayer?.Play();
         }
 
         CheckCollision();
     }
-
 
     // player
     private void OnTapLeft(object sender, EventArgs e)
@@ -140,7 +168,7 @@ public partial class MainPage : ContentPage
     {
         Obstacle.TranslationY += obstacleSpeed;
 
-        // Slightly more reliable: respawn after it fully leaves the screen
+        // respawn after it fully leaves the screen
         if (Obstacle.Y + Obstacle.TranslationY > GameArea.Height + Obstacle.Height)
         {
             RespawnObstacle();
@@ -152,11 +180,9 @@ public partial class MainPage : ContentPage
             if (score % 5 == 0 && obstacleSpeed < 20)
                 obstacleSpeed += 0.5;
 
-            if (score % 3 == 0) // every 3 points
-            {
+            // spawn pickup every 3 points
+            if (score % 3 == 0)
                 pickups.Spawn(GameArea.Width);
-            }
-
         }
     }
 
@@ -210,6 +236,13 @@ public partial class MainPage : ContentPage
         LoadPlayerImage();
     }
 
+    protected override void OnDisappearing()
+    {
+        coinPlayer?.Stop();
+        crashPlayer?.Stop();
+
+        base.OnDisappearing();
+    }
 
     // end and reset
     private void ResetPositions()
@@ -225,6 +258,11 @@ public partial class MainPage : ContentPage
         isGameRunning = false;
         gameTimer?.Stop();
 
+        // play crash 
+        bool soundOn = Preferences.Get("sound", true);
+        if (soundOn)
+            crashPlayer?.Play();
+
         // save high score
         int highScore = Preferences.Get("highscore", 0);
         if (score > highScore)
@@ -236,6 +274,7 @@ public partial class MainPage : ContentPage
         GameArea.IsVisible = false;
     }
 }
+
 
 
 
