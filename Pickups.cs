@@ -15,4 +15,16 @@ public class Pickups
         pickup = pickupImage;
         random = new Random();
     }
+
+    // spawn coin at top in random lane
+    public void Spawn(double gameWidth)
+    {
+        int lane = random.Next(0, 3);
+        double laneWidth = gameWidth / 3;
+        double targetX = (laneWidth * lane) + (laneWidth / 2) - (pickup.Width / 2);
+
+        pickup.TranslationX = targetX - pickup.X;
+        pickup.TranslationY = -pickup.Height;
+        pickup.IsVisible = true;
+    }
 }
