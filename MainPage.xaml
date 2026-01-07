@@ -7,11 +7,16 @@
     <AbsoluteLayout>
 
         <!-- background image-->
-        <Image Source="three_lane_road_wide.gif"
-               Aspect="AspectFill"
-               AbsoluteLayout.LayoutBounds="0,0,1,1"
-               AbsoluteLayout.LayoutFlags="All" />
-        
+        <MediaElement x:Name="BgVideo"
+              Source="road.mp4"
+              AutoPlay="True"
+              IsLooping="True"
+              ShowsPlaybackControls="False"
+              Aspect="AspectFill"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All" />
+
+
         <!-- game area -->
         <Grid x:Name="GameArea"
       IsVisible="False"

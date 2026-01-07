@@ -1,4 +1,7 @@
-﻿namespace CrossplatFinal;
+﻿using CrossplatFinal.Models;
+using Microsoft.Maui.Storage;
+
+namespace CrossplatFinal;
 
 public partial class MainPage : ContentPage
 {
@@ -119,7 +122,7 @@ public partial class MainPage : ContentPage
                 obstacleSpeed += 0.5;
             }
         }
-        }
+    }
 
     private void RespawnObstacle()
     {
