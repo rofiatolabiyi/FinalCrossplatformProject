@@ -47,6 +47,10 @@
                 FontSize="18"
                 Clicked="Save_Clicked" />
 
+        <Button Text="Change Character Image"
+        Clicked="ChangeCharacter_Clicked" />
+
+
         <Button Text="Back"
                 FontSize="18"
                 Clicked="Back_Clicked" />

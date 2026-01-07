@@ -22,8 +22,31 @@ public partial class MainPage : ContentPage
         player = new Player(Player);
 
         GameArea.SizeChanged += OnGameAreaSizeChanged;
+
+        // show saved high score on launch
+        UpdateHighScoreLabel();
     }
 
+    // save and load players chosen image helper
+    private void LoadPlayerImage()
+    {
+        string imagePath = Preferences.Get("player_image", string.Empty);
+
+        if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+        {
+            Player.Source = ImageSource.FromFile(imagePath);
+        }
+        else
+        {
+            Player.Source = "player.png"; // default image
+        }
+    }
+
+    private void UpdateHighScoreLabel()
+    {
+        int highScore = Preferences.Get("highscore", 0);
+        HighScoreLabel.Text = $"High Score: {highScore}";
+    }
 
     private void OnGameAreaSizeChanged(object sender, EventArgs e)
     {
@@ -51,6 +74,8 @@ public partial class MainPage : ContentPage
         score = 0;
         ScoreLabel.Text = "Score: 0";
         isGameRunning = true;
+
+        UpdateHighScoreLabel();
 
         ResetPositions();
         StartGameLoop();
@@ -100,7 +125,8 @@ public partial class MainPage : ContentPage
     {
         Obstacle.TranslationY += obstacleSpeed;
 
-        if (Obstacle.Y + Obstacle.TranslationY > GameArea.Height)
+        // Slightly more reliable: respawn after it fully leaves the screen
+        if (Obstacle.Y + Obstacle.TranslationY > GameArea.Height + Obstacle.Height)
         {
             RespawnObstacle();
 
@@ -109,7 +135,7 @@ public partial class MainPage : ContentPage
 
             // adds speed, capped at 20
             if (score % 5 == 0 && obstacleSpeed < 20)
-                obstacleSpeed += 2;
+                obstacleSpeed += 0.5;
         }
     }
 
@@ -150,6 +176,13 @@ public partial class MainPage : ContentPage
         await Shell.Current.GoToAsync(nameof(SettingsPage));
     }
 
+    // optional: reset high score (wire to a button if you add one)
+    private void ResetHighScore_Clicked(object sender, EventArgs e)
+    {
+        Preferences.Set("highscore", 0);
+        UpdateHighScoreLabel();
+    }
+
     // end and reset
     private void ResetPositions()
     {
@@ -164,10 +197,18 @@ public partial class MainPage : ContentPage
         isGameRunning = false;
         gameTimer?.Stop();
 
+        // save high score
+        int highScore = Preferences.Get("highscore", 0);
+        if (score > highScore)
+            Preferences.Set("highscore", score);
+
+        UpdateHighScoreLabel();
+
         StartScreen.IsVisible = true;
         GameArea.IsVisible = false;
     }
 }
+
 
 
 
