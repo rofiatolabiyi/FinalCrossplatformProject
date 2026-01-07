@@ -4,41 +4,63 @@ namespace CrossplatFinal;
 
 public class Pickups
 {
-    //declaring variabeles
     private readonly Image pickup;
-    private readonly Random random;
+    private readonly Random random = new();
 
     private double speed = 5;
+
+    private int currentValue = 0;
 
     public Pickups(Image pickupImage)
     {
         pickup = pickupImage;
-        random = new Random();
     }
 
-    // spawn coin at top in random lane
+    // Spawn coin with weighted randomness
     public void Spawn(double gameWidth)
     {
+        int roll = random.Next(100); // 0–99
+
+        if (roll < 60)
+        {
+            pickup.Source = "bronzecoin.png";
+            currentValue = 1;
+        }
+        else if (roll < 90)
+        {
+            pickup.Source = "silvercoin.png";
+            currentValue = 5;
+        }
+        else
+        {
+            pickup.Source = "goldcoin.png";
+            currentValue = 10;
+        }
+
         int lane = random.Next(0, 3);
         double laneWidth = gameWidth / 3;
         double targetX = (laneWidth * lane) + (laneWidth / 2) - (pickup.Width / 2);
 
         pickup.TranslationX = targetX - pickup.X;
         pickup.TranslationY = -pickup.Height;
+        pickup.Rotation = 0;
         pickup.IsVisible = true;
     }
 
-    // move coin down
+    // Move + animate coin
     public void Update()
     {
         if (!pickup.IsVisible) return;
 
         pickup.TranslationY += speed;
+        pickup.Rotation += 6; // spin
     }
 
-    // check if player collected coin
-    public bool CheckCollected(Image player)
+    // Collision check
+    public bool TryCollect(Image player, out int value)
     {
+        value = 0;
+
         if (!pickup.IsVisible) return false;
 
         Rect playerRect = new(
@@ -56,13 +78,14 @@ public class Pickups
         if (playerRect.IntersectsWith(pickupRect))
         {
             pickup.IsVisible = false;
+            value = currentValue;
             return true;
         }
 
         return false;
     }
 
-    // hide coin if it goes off screen
+    // Hide if off screen
     public void CheckOffScreen(double gameHeight)
     {
         if (pickup.IsVisible &&
@@ -71,5 +94,4 @@ public class Pickups
             pickup.IsVisible = false;
         }
     }
-
 }
