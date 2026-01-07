@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CrossplatFinal.Models;
+namespace CrossplatFinal;
 
 public class Player
 {

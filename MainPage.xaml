@@ -6,6 +6,12 @@
 
     <AbsoluteLayout>
 
+        <!-- background image-->
+        <Image Source="three_lane_road_wide.gif"
+               Aspect="AspectFill"
+               AbsoluteLayout.LayoutBounds="0,0,1,1"
+               AbsoluteLayout.LayoutFlags="All" />
+        
         <!-- game area -->
         <Grid x:Name="GameArea"
       IsVisible="False"
@@ -20,9 +26,9 @@
             </Grid.GestureRecognizers>
 
             <!-- lanes -->
-            <BoxView Grid.Column="0" Color="#222" />
-            <BoxView Grid.Column="1" Color="#1A1A1A" />
-            <BoxView Grid.Column="2" Color="#222" />
+            <BoxView Grid.Column="0"/>
+            <BoxView Grid.Column="1"/>
+            <BoxView Grid.Column="2"/>
 
             <!-- player -->
             <Image x:Name="Player"

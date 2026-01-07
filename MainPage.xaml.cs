@@ -1,6 +1,4 @@
-﻿using CrossplatFinal.Models;
-
-namespace CrossplatFinal;
+﻿namespace CrossplatFinal;
 
 public partial class MainPage : ContentPage
 {
